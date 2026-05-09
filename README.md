@@ -73,7 +73,7 @@ wrap around them.
 - **Page guard:** protect entire UI routes.
 - **CAPTCHA-style checkbox:** a familiar "I'm not a robot" shape.
 
-  ![I'm not a robot checkbox](public/Screenshot%202026-05-09%20at%2012.33.15%20AM.png)
+  ![I'm not a robot checkbox](public/Screenshot%202026-05-09%20at%2012.33.15%E2%80%AFAM.png)
 
 - **Standalone script tag:** embed on non-React sites.
 - **Widget builder:** generate React and script snippets visually.
