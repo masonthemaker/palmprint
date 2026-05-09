@@ -9,6 +9,10 @@ Think of it as lightweight **2FA for "are you actually a person?"**
 It ships as a working Next.js demo plus SDKs for React, server-side token
 verification, script-tag embeds, and Go backends.
 
+![Palmprint UI](public/img.png)
+
+[![Join our Discord](https://img.shields.io/badge/Discord-Join_Community-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/Av22T2TY9D)
+
 ## Why
 
 CAPTCHAs are annoying, increasingly weak against automation, and often hostile
@@ -68,6 +72,9 @@ wrap around them.
 - **React provider:** call `verify()` from any action.
 - **Page guard:** protect entire UI routes.
 - **CAPTCHA-style checkbox:** a familiar "I'm not a robot" shape.
+
+  ![I'm not a robot checkbox](public/Screenshot%202026-05-09%20at%2012.33.15%20AM.png)
+
 - **Standalone script tag:** embed on non-React sites.
 - **Widget builder:** generate React and script snippets visually.
 - **Capture bucket:** optional PNG/WebM captures tied to verified sessions.
