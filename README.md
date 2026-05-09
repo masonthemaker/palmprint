@@ -318,5 +318,5 @@ analysis.
 
 ## License
 
-Open source. Add your preferred license before publishing if this repository
-does not already include one.
+Apache License 2.0. Palmprint is fully open source; use it, fork it, modify it,
+and build on it under the terms in [LICENSE](./LICENSE).
