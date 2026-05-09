@@ -22,58 +22,23 @@
 // liveness checks on captures, which is out of scope for this SDK.
 
 import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
-
-export type SecurityLevel = "low" | "medium" | "high";
+import type {
+  ChallengePayload,
+  ClientPalmprintPayload,
+  SecurityLevel,
+  SessionPayload,
+} from "@palmprint/core";
+export type {
+  ChallengePayload,
+  ClientPalmprintPayload,
+  SecurityLevel,
+  SessionPayload,
+} from "@palmprint/core";
 
 const LEVEL_RANK: Record<SecurityLevel, number> = {
   low: 0,
   medium: 1,
   high: 2,
-};
-
-export type ChallengePayload = {
-  v: 1;
-  kind: "challenge";
-  iss: string;
-  aud?: string;
-  sub?: string;
-  iat: number;
-  exp: number;
-  nonce: string;
-  required_level: SecurityLevel;
-  required_steps: number;
-  /** Free-form context. Echoed back in the session payload. */
-  ctx?: Record<string, unknown>;
-};
-
-export type SessionPayload = {
-  v: 1;
-  kind: "session";
-  iss: string;
-  aud?: string;
-  sub?: string;
-  iat: number;
-  exp: number;
-  nonce: string;
-  level: SecurityLevel;
-  steps: number;
-  items_per_step: number;
-  challenge_nonce: string;
-  ctx?: Record<string, unknown>;
-};
-
-/** Unsigned token issued by the browser <Palmprint> component. */
-export type ClientPalmprintPayload = {
-  v: number;
-  iss: string;
-  iat: number;
-  exp: number;
-  nonce: string;
-  level: SecurityLevel;
-  steps: number;
-  items_per_step: number;
-  /** Set when challengeNonce was passed to <Palmprint>. */
-  challenge_nonce?: string;
 };
 
 const PREFIX_CHALLENGE = "ppc";

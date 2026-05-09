@@ -11,7 +11,7 @@ same imports you would use in an app.
 | `@palmprint/server` | Challenge/session tokens, replay protection, and route middleware. |
 | `@palmprint/core` | Shared types and tiny token helpers. Most apps do not import it directly. |
 | `@palmprint/widget` | Standalone script-tag bundle for non-React sites. |
-| `github.com/palmprint/palmprint-go` | Go server SDK with `net/http` routes and middleware. |
+| `github.com/masonthemaker/palmprint/packages/go` | Go server SDK with `net/http` routes and middleware. |
 
 ## The easiest React setup
 
@@ -77,7 +77,7 @@ send it as a bearer token, and verify it on the server.
 
 ## Go backend
 
-Use `github.com/palmprint/palmprint-go` when your API is written in Go:
+Use `github.com/masonthemaker/palmprint/packages/go` when your API is written in Go:
 
 ```go
 sdk, err := palmprint.New(palmprint.Options{

@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	palmprint "github.com/palmprint/palmprint-go"
+	palmprint "github.com/masonthemaker/palmprint/packages/go"
 )
 
 func main() {

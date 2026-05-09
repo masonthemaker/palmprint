@@ -1,0 +1,155 @@
+{
+  "secret": "0123456789abcdef0123456789abcdef",
+  "challenge": {
+    "payload": {
+      "v": 1,
+      "kind": "challenge",
+      "iss": "conformance",
+      "aud": "demo",
+      "sub": "user:fixture",
+      "iat": 1893456000,
+      "exp": 4102444800,
+      "nonce": "challenge-nonce-001",
+      "required_level": "medium",
+      "required_steps": 2,
+      "ctx": { "intent": "conformance" }
+    },
+    "token": "ppc.eyJ2IjoxLCJraW5kIjoiY2hhbGxlbmdlIiwiaXNzIjoiY29uZm9ybWFuY2UiLCJhdWQiOiJkZW1vIiwic3ViIjoidXNlcjpmaXh0dXJlIiwiaWF0IjoxODkzNDU2MDAwLCJleHAiOjQxMDI0NDQ4MDAsIm5vbmNlIjoiY2hhbGxlbmdlLW5vbmNlLTAwMSIsInJlcXVpcmVkX2xldmVsIjoibWVkaXVtIiwicmVxdWlyZWRfc3RlcHMiOjIsImN0eCI6eyJpbnRlbnQiOiJjb25mb3JtYW5jZSJ9fQ.3K5Lfy7xmKj37jNEkPPzBdam_VRvlH5T8Sqhlelypj4"
+  },
+  "highChallenge": {
+    "payload": {
+      "v": 1,
+      "kind": "challenge",
+      "iss": "conformance",
+      "aud": "demo",
+      "sub": "user:fixture",
+      "iat": 1893456000,
+      "exp": 4102444800,
+      "nonce": "challenge-nonce-high",
+      "required_level": "high",
+      "required_steps": 2,
+      "ctx": { "intent": "conformance" }
+    },
+    "token": "ppc.eyJ2IjoxLCJraW5kIjoiY2hhbGxlbmdlIiwiaXNzIjoiY29uZm9ybWFuY2UiLCJhdWQiOiJkZW1vIiwic3ViIjoidXNlcjpmaXh0dXJlIiwiaWF0IjoxODkzNDU2MDAwLCJleHAiOjQxMDI0NDQ4MDAsIm5vbmNlIjoiY2hhbGxlbmdlLW5vbmNlLWhpZ2giLCJyZXF1aXJlZF9sZXZlbCI6ImhpZ2giLCJyZXF1aXJlZF9zdGVwcyI6MiwiY3R4Ijp7ImludGVudCI6ImNvbmZvcm1hbmNlIn19.N_MNktUlK6Ap0jS3_Y3ZU25RiK0omKhQRJbrPiZtvas"
+  },
+  "expiredChallenge": {
+    "payload": {
+      "v": 1,
+      "kind": "challenge",
+      "iss": "conformance",
+      "aud": "demo",
+      "sub": "user:fixture",
+      "iat": 1893456000,
+      "exp": 946684800,
+      "nonce": "challenge-nonce-expired",
+      "required_level": "medium",
+      "required_steps": 2,
+      "ctx": { "intent": "conformance" }
+    },
+    "token": "ppc.eyJ2IjoxLCJraW5kIjoiY2hhbGxlbmdlIiwiaXNzIjoiY29uZm9ybWFuY2UiLCJhdWQiOiJkZW1vIiwic3ViIjoidXNlcjpmaXh0dXJlIiwiaWF0IjoxODkzNDU2MDAwLCJleHAiOjk0NjY4NDgwMCwibm9uY2UiOiJjaGFsbGVuZ2Utbm9uY2UtZXhwaXJlZCIsInJlcXVpcmVkX2xldmVsIjoibWVkaXVtIiwicmVxdWlyZWRfc3RlcHMiOjIsImN0eCI6eyJpbnRlbnQiOiJjb25mb3JtYW5jZSJ9fQ.z61jS4Xi42jugvduMa2Xvgu28BFynb_nQwkXT4Z01Rc"
+  },
+  "session": {
+    "payload": {
+      "v": 1,
+      "kind": "session",
+      "iss": "conformance",
+      "aud": "demo",
+      "sub": "user:fixture",
+      "iat": 1893456001,
+      "exp": 4102444800,
+      "nonce": "session-nonce-001",
+      "level": "medium",
+      "steps": 2,
+      "items_per_step": 2,
+      "challenge_nonce": "challenge-nonce-001",
+      "ctx": { "intent": "conformance" }
+    },
+    "token": "pps.eyJ2IjoxLCJraW5kIjoic2Vzc2lvbiIsImlzcyI6ImNvbmZvcm1hbmNlIiwiYXVkIjoiZGVtbyIsInN1YiI6InVzZXI6Zml4dHVyZSIsImlhdCI6MTg5MzQ1NjAwMSwiZXhwIjo0MTAyNDQ0ODAwLCJub25jZSI6InNlc3Npb24tbm9uY2UtMDAxIiwibGV2ZWwiOiJtZWRpdW0iLCJzdGVwcyI6MiwiaXRlbXNfcGVyX3N0ZXAiOjIsImNoYWxsZW5nZV9ub25jZSI6ImNoYWxsZW5nZS1ub25jZS0wMDEiLCJjdHgiOnsiaW50ZW50IjoiY29uZm9ybWFuY2UifX0.Mcn-3Nc8zIlSU5a-P-oXcuKSENJrBlDjEckeS18gvog"
+  },
+  "expiredSession": {
+    "payload": {
+      "v": 1,
+      "kind": "session",
+      "iss": "conformance",
+      "aud": "demo",
+      "sub": "user:fixture",
+      "iat": 1893456001,
+      "exp": 946684800,
+      "nonce": "session-nonce-expired",
+      "level": "medium",
+      "steps": 2,
+      "items_per_step": 2,
+      "challenge_nonce": "challenge-nonce-001",
+      "ctx": { "intent": "conformance" }
+    },
+    "token": "pps.eyJ2IjoxLCJraW5kIjoic2Vzc2lvbiIsImlzcyI6ImNvbmZvcm1hbmNlIiwiYXVkIjoiZGVtbyIsInN1YiI6InVzZXI6Zml4dHVyZSIsImlhdCI6MTg5MzQ1NjAwMSwiZXhwIjo5NDY2ODQ4MDAsIm5vbmNlIjoic2Vzc2lvbi1ub25jZS1leHBpcmVkIiwibGV2ZWwiOiJtZWRpdW0iLCJzdGVwcyI6MiwiaXRlbXNfcGVyX3N0ZXAiOjIsImNoYWxsZW5nZV9ub25jZSI6ImNoYWxsZW5nZS1ub25jZS0wMDEiLCJjdHgiOnsiaW50ZW50IjoiY29uZm9ybWFuY2UifX0.jTFLjsqjGWm7OzE5u7hWR203U2oxGOjKf-ZYfhVWVho"
+  },
+  "client": {
+    "payload": {
+      "v": 1,
+      "iss": "palmprint-web",
+      "iat": 1893456002,
+      "exp": 4102444800,
+      "nonce": "client-nonce-001",
+      "level": "medium",
+      "steps": 2,
+      "items_per_step": 2,
+      "challenge_nonce": "challenge-nonce-001"
+    },
+    "token": "palmprint.eyJ2IjoxLCJpc3MiOiJwYWxtcHJpbnQtd2ViIiwiaWF0IjoxODkzNDU2MDAyLCJleHAiOjQxMDI0NDQ4MDAsIm5vbmNlIjoiY2xpZW50LW5vbmNlLTAwMSIsImxldmVsIjoibWVkaXVtIiwic3RlcHMiOjIsIml0ZW1zX3Blcl9zdGVwIjoyLCJjaGFsbGVuZ2Vfbm9uY2UiOiJjaGFsbGVuZ2Utbm9uY2UtMDAxIn0"
+  },
+  "lowClient": {
+    "payload": {
+      "v": 1,
+      "iss": "palmprint-web",
+      "iat": 1893456002,
+      "exp": 4102444800,
+      "nonce": "client-nonce-low",
+      "level": "low",
+      "steps": 2,
+      "items_per_step": 2,
+      "challenge_nonce": "challenge-nonce-high"
+    },
+    "token": "palmprint.eyJ2IjoxLCJpc3MiOiJwYWxtcHJpbnQtd2ViIiwiaWF0IjoxODkzNDU2MDAyLCJleHAiOjQxMDI0NDQ4MDAsIm5vbmNlIjoiY2xpZW50LW5vbmNlLWxvdyIsImxldmVsIjoibG93Iiwic3RlcHMiOjIsIml0ZW1zX3Blcl9zdGVwIjoyLCJjaGFsbGVuZ2Vfbm9uY2UiOiJjaGFsbGVuZ2Utbm9uY2UtaGlnaCJ9"
+  },
+  "mismatchClient": {
+    "payload": {
+      "v": 1,
+      "iss": "palmprint-web",
+      "iat": 1893456002,
+      "exp": 4102444800,
+      "nonce": "client-nonce-mismatch",
+      "level": "medium",
+      "steps": 2,
+      "items_per_step": 2,
+      "challenge_nonce": "wrong-nonce"
+    },
+    "token": "palmprint.eyJ2IjoxLCJpc3MiOiJwYWxtcHJpbnQtd2ViIiwiaWF0IjoxODkzNDU2MDAyLCJleHAiOjQxMDI0NDQ4MDAsIm5vbmNlIjoiY2xpZW50LW5vbmNlLW1pc21hdGNoIiwibGV2ZWwiOiJtZWRpdW0iLCJzdGVwcyI6MiwiaXRlbXNfcGVyX3N0ZXAiOjIsImNoYWxsZW5nZV9ub25jZSI6Indyb25nLW5vbmNlIn0"
+  },
+  "expiredClient": {
+    "payload": {
+      "v": 1,
+      "iss": "palmprint-web",
+      "iat": 1893456002,
+      "exp": 946684800,
+      "nonce": "client-nonce-expired",
+      "level": "medium",
+      "steps": 2,
+      "items_per_step": 2,
+      "challenge_nonce": "challenge-nonce-001"
+    },
+    "token": "palmprint.eyJ2IjoxLCJpc3MiOiJwYWxtcHJpbnQtd2ViIiwiaWF0IjoxODkzNDU2MDAyLCJleHAiOjk0NjY4NDgwMCwibm9uY2UiOiJjbGllbnQtbm9uY2UtZXhwaXJlZCIsImxldmVsIjoibWVkaXVtIiwic3RlcHMiOjIsIml0ZW1zX3Blcl9zdGVwIjoyLCJjaGFsbGVuZ2Vfbm9uY2UiOiJjaGFsbGVuZ2Utbm9uY2UtMDAxIn0"
+  },
+  "malformedToken": "not-a-valid-token",
+  "badSignatureChallenge": "ppc.eyJ2IjoxLCJraW5kIjoiY2hhbGxlbmdlIiwiaXNzIjoiY29uZm9ybWFuY2UiLCJhdWQiOiJkZW1vIiwic3ViIjoidXNlcjpmaXh0dXJlIiwiaWF0IjoxODkzNDU2MDAwLCJleHAiOjQxMDI0NDQ4MDAsIm5vbmNlIjoiY2hhbGxlbmdlLW5vbmNlLTAwMSIsInJlcXVpcmVkX2xldmVsIjoibWVkaXVtIiwicmVxdWlyZWRfc3RlcHMiOjIsImN0eCI6eyJpbnRlbnQiOiJjb25mb3JtYW5jZSJ9fQ.3K5Lfy7xmKj37jNEkPPzBdam_VRvlH5T8SqhlelypjA",
+  "expectedErrors": {
+    "wrongKind": "wrong_kind",
+    "badSignature": "bad_signature",
+    "expired": "expired",
+    "malformedToken": "malformed_token",
+    "nonceAlreadyConsumed": "nonce_already_consumed",
+    "insufficientLevel": "insufficient_level",
+    "challengeNonceMismatch": "challenge_nonce_mismatch",
+    "clientTokenInvalid": "client_token_invalid"
+  }
+}

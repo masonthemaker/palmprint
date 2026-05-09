@@ -8,7 +8,9 @@ import {
   GestureRecognizer,
   type GestureRecognizerResult,
 } from "@mediapipe/tasks-vision";
+import type { CaptureMode, Mode, SecurityLevel } from "@palmprint/core";
 import { PiTreePalmDuotone } from "react-icons/pi";
+export type { CaptureMode, Mode, SecurityLevel } from "@palmprint/core";
 
 // ---------- Hand gestures ----------
 
@@ -83,10 +85,6 @@ const FACE_EMOJI: Record<FaceGestureName, string> = {
   WinkRight: "😉",
   BrowsUp: "🤨",
 };
-
-export type Mode = "hand" | "face" | "both";
-export type SecurityLevel = "low" | "medium" | "high";
-export type CaptureMode = "off" | "photo" | "video";
 
 export type Capture = {
   id: string;

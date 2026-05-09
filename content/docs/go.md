@@ -6,7 +6,7 @@ your frontend still runs the Palmprint React provider or script-tag widget.
 ## Install
 
 ```bash
-go get github.com/palmprint/palmprint-go
+go get github.com/masonthemaker/palmprint/packages/go
 ```
 
 Inside this repo the module lives at `packages/go`.
@@ -20,7 +20,7 @@ import (
 	"log"
 	"os"
 
-	palmprint "github.com/palmprint/palmprint-go"
+	palmprint "github.com/masonthemaker/palmprint/packages/go"
 )
 
 func newPalmprint() *palmprint.Server {

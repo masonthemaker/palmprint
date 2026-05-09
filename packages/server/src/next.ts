@@ -14,7 +14,7 @@
 //
 // 401 on missing/invalid token. 403 on insufficient level.
 
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server.js";
 import {
   PalmprintTokenError,
   type PalmprintServer,

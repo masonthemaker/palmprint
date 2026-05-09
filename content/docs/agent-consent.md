@@ -97,4 +97,4 @@ State machine: `pending → verified → paid` (when payment required), or `pend
 - **Storage is in-memory.** Replace `consentStore.ts` with a real DB before shipping.
 - **Mock payments.** No Stripe, no PCI compliance. Replace before going live.
 
-See [`gaps.md`](https://github.com/your-org/palmprint/blob/main/gaps.md) for the full list.
+See [`gaps.md`](https://github.com/masonthemaker/palmprint/blob/main/gaps.md) for the full list.

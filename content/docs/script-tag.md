@@ -11,11 +11,11 @@ npm run build:widget
 ```
 
 Sizes (current):
-- raw: ~374 KB
-- gzipped: ~113 KB
-- inlined CSS portion: ~25 KB (already counted)
+- raw: ~396 KB
+- gzipped: ~118 KB
+- inlined CSS portion: ~37 KB (already counted)
 
-The MediaPipe WASM and ML models still load lazily from Google's CDN at first verify, so 113 KB gz is the actual upfront budget on the integrator's site.
+The MediaPipe WASM and ML models still load lazily from Google's CDN at first verify, so 118 KB gz is the actual upfront budget on the integrator's site.
 
 ## Use it on any page
 
@@ -128,13 +128,13 @@ window.Palmprint.mount(host, {
 
 ## Demo
 
-A working example lives at [`public/widget-demo.html`](https://github.com/your-org/palmprint/blob/main/public/widget-demo.html). Open `http://localhost:3000/widget-demo.html` after `npm run dev` to try it.
+A working example lives at [`public/widget-demo.html`](https://github.com/masonthemaker/palmprint/blob/main/public/widget-demo.html). Open `http://localhost:3000/widget-demo.html` after `npm run dev` to try it.
 
 ## Deploying the bundle
 
 You don't need to operate a CDN. Two easy options:
 
-- **`npm publish`** as `@your-org/palmprint-widget`. jsDelivr automatically mirrors it under `https://cdn.jsdelivr.net/npm/@your-org/palmprint-widget@1/widget.js` — global edge-cached for free.
+- **`npm publish`** as `@palmprint/widget`. jsDelivr automatically mirrors it under `https://cdn.jsdelivr.net/npm/@palmprint/widget@1/dist/palmprint-widget.js` — global edge-cached for free.
 - **Static host** the file on Vercel / Cloudflare Pages / S3+CloudFront under your own domain for branding and cache control.
 
 ## Cross-origin embeds

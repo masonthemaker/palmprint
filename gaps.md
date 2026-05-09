@@ -1,13 +1,13 @@
 # Gaps Analysis
 
-Current audit after the SDK split, Go SDK, GitHub README polish, docs updates,
-and Apache-2.0 licensing.
+Current audit after the SDK split, Go SDK, package builds, shared conformance
+fixtures, GitHub README polish, docs updates, and Apache-2.0 licensing.
 
 Palmprint is now best understood as the open-source reference implementation:
 protocol, browser verification UI, signed session flow, SDK surfaces, docs,
 demos, and pluggable interfaces. Production durability, abuse controls, audit
-trails, and hosted liveness workflows remain natural hosted or enterprise
-layers around the open core.
+trails, hosted review workflows, and managed liveness analysis remain natural
+hosted or enterprise layers around the open core.
 
 ---
 
@@ -15,10 +15,10 @@ layers around the open core.
 
 ### Open-Source Posture
 
-The repo is licensed under Apache-2.0 and the README now describes Palmprint as
-a fully open foundation. That matches the intended split:
+The repo is licensed under Apache-2.0 and the README describes Palmprint as a
+fully open foundation. That matches the intended split:
 
-- OSS: protocol, local UI, token flow, SDKs, examples, and docs.
+- OSS: protocol, local UI, token flow, SDKs, examples, package builds, and docs.
 - Hosted/enterprise: durable infra, rate limits, storage workflows, audit logs,
   review queues, team controls, and hosted liveness analysis.
 
@@ -58,8 +58,8 @@ The demo app dogfoods `@palmprint/react` instead of only importing local
 The standalone bundle supports both designs:
 
 ```html
-data-widget="button"
-data-widget="checkbox"
+<script src="/dist/palmprint-widget.js" data-widget="button"></script>
+<script src="/dist/palmprint-widget.js" data-widget="checkbox"></script>
 ```
 
 It supports signed flow via `data-api-base`, defaults to `/api/palmprint`, and
@@ -67,12 +67,26 @@ dispatches `palmprint:verified` with the same signed result shape. Manual mode
 is explicit: `data-api-base="false"`.
 
 This covers the non-React frontend SDK story for now. A later dedicated
-vanilla JS package could wrap `window.Palmprint.mount(...)`, but the core
-embed path exists.
+vanilla JS package could wrap `window.Palmprint.mount(...)`, but the core embed
+path exists and is documented.
+
+### Node Server SDK
+
+`@palmprint/server` is now package-buildable and keeps the root export focused
+on the plain server SDK. Next helpers live on explicit subpaths:
+
+```ts
+import { createPalmprintServer } from "@palmprint/server";
+import { createPalmprintNext } from "@palmprint/server/next";
+import { createPalmprintRoutes } from "@palmprint/server/routes";
+```
+
+That matters because plain Node users can import the server SDK without pulling
+in `next/server`.
 
 ### Go Server SDK
 
-`packages/go` now mirrors the server SDK:
+`packages/go` mirrors the server SDK:
 
 - challenge issue/verify
 - client token parse
@@ -84,6 +98,58 @@ embed path exists.
 - a small `examples/testpage` server
 
 This means the backend SDK story is no longer Node-only.
+
+### Cross-SDK Conformance
+
+Node and Go now share `conformance/fixtures.json`. The fixtures cover:
+
+- challenge token shape
+- session token shape
+- client token shape
+- signature validation
+- expired token behavior
+- wrong-kind behavior
+- replay behavior
+- level enforcement
+- challenge nonce mismatch behavior
+- malformed client token behavior
+
+Run the checks with:
+
+```bash
+npm run build:packages
+npm run test:conformance
+npm run test:go
+```
+
+### Shared Types
+
+`@palmprint/core` owns the shared TypeScript protocol types:
+
+- `SecurityLevel`
+- `Mode`
+- `CaptureMode`
+- `ChallengePayload`
+- `SessionPayload`
+- `ClientPalmprintPayload`
+- `VerificationResultBase`
+
+The React and server packages import/re-export from `@palmprint/core` instead
+of duplicating those definitions. Go stays aligned through JSON tags, stable
+error codes, and the shared conformance fixtures.
+
+### Package Build Outputs
+
+The TypeScript SDK packages now emit package-local `dist` outputs:
+
+- ESM JavaScript
+- `.d.ts` declarations
+- source maps
+- tested package `exports`
+- package-level READMEs
+
+The widget package continues to emit `packages/widget/dist/palmprint-widget.js`.
+The Go package is source-native and testable with `go test ./...`.
 
 ### Docs
 
@@ -97,7 +163,8 @@ The docs now include:
 - middleware
 - token formats
 
-Docs code blocks are copyable, and the README is shaped for GitHub discovery.
+Docs code blocks are copyable in the app UI, and the README is shaped for
+GitHub discovery.
 
 ### Captures
 
@@ -114,46 +181,6 @@ enforces the derived level.
 ---
 
 ## Remaining OSS Gaps
-
-### Package Build Outputs
-
-The repo has package boundaries and workspace package manifests, but the
-TypeScript packages currently point at source files. Before publishing, add a
-proper package build that emits:
-
-- ESM JavaScript
-- `.d.ts` declarations
-- package-local CSS/assets where needed
-- tested `exports` entries for each subpath
-- package tarballs that work outside this monorepo
-
-The widget package already emits `packages/widget/dist/palmprint-widget.js`.
-The Go package is source-native and already testable with `go test ./...`.
-
-### Cross-SDK Conformance
-
-Node and Go now implement the same protocol, but there is no shared conformance
-fixture suite yet. Add golden fixtures that prove both SDKs agree on:
-
-- challenge token shape
-- session token shape
-- signature validation
-- expired token behavior
-- wrong-kind behavior
-- replay behavior
-- level/steps enforcement
-- malformed client token behavior
-
-This matters more now that Palmprint is multi-language.
-
-### Shared Types
-
-`@palmprint/core` exists, but the server and React packages still duplicate a
-few core types (`SecurityLevel`, token payloads). The end-state is to import
-those types from `@palmprint/core` everywhere.
-
-For Go, the equivalent is keeping JSON field names and error codes aligned with
-the TypeScript source through conformance tests.
 
 ### One Frontend Verification Primitive
 
@@ -190,17 +217,16 @@ server package version.
 The Go SDK is portable across Go server environments, but does not replace a
 Web Crypto-compatible JavaScript server package.
 
-### Publish Readiness
+### Publish Automation
 
-The repo is open and licensed, but the packages are still marked `private`.
-Before publishing SDKs:
+The package manifests are no longer private and the publishable package outputs
+exist. The remaining publish work is operational:
 
-- remove `private` from publishable package manifests
-- add package-level READMEs where needed
-- add provenance/release automation
-- add versioning/changelog policy
-- decide final npm scope and Go module path
-- verify CDN paths for `@palmprint/widget`
+- provenance/release automation
+- versioning/changelog policy
+- final npm scope confirmation
+- final Go module path confirmation
+- CDN publishing path for `@palmprint/widget`
 
 ### Abuse Controls
 
@@ -218,18 +244,29 @@ Palmprint proves the user reacted to randomized prompts in real time. It does
 not prove identity, and it does not include a server-side deepfake/liveness
 classifier. Captures are the raw material for that pipeline.
 
+### End-to-End Browser Tests
+
+Unit and conformance coverage are now much stronger, but there is still no
+browser E2E suite that walks through:
+
+- React button flow
+- React CAPTCHA checkbox flow
+- script-tag button flow
+- script-tag CAPTCHA checkbox flow
+- capture upload flow
+
+This is the next high-value test gap because it verifies the demos, SDK wiring,
+and docs snippets as real user flows.
+
 ---
 
 ## Best Next Steps
 
-1. Add a real package build for `@palmprint/core`, `@palmprint/server`, and
-   `@palmprint/react`.
-2. Add cross-SDK conformance fixtures for Node and Go token behavior.
-3. Move duplicated token/types into `@palmprint/core`.
-4. Refactor `VerifyWidget` to use the same internal verification primitive as
+1. Refactor `VerifyWidget` to use the same internal verification primitive as
    `PalmprintProvider`.
-5. Add one Redis nonce adapter and one S3/R2 capture adapter as reference
+2. Add end-to-end browser tests for React button, React checkbox, script button,
+   and script checkbox flows.
+3. Add one Redis nonce adapter and one S3/R2 capture adapter as reference
    production adapters.
-6. Add end-to-end browser tests for React button, checkbox, script button, and
-   script checkbox flows.
-7. Decide final package publishing names and release automation.
+4. Add Web Crypto support for edge-style JavaScript runtimes.
+5. Add release automation, provenance, and changelog policy.

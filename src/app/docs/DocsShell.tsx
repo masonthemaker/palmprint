@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, type ReactNode } from "react";
-import { PiTreePalmDuotone } from "react-icons/pi";
+import { FaGithubSquare } from "react-icons/fa";
+import { PiDiscordLogoDuotone, PiTreePalmDuotone } from "react-icons/pi";
 import type { DocSection } from "@/lib/docs";
 
 export default function DocsShell({
@@ -91,10 +92,18 @@ export default function DocsShell({
             ))}
             <div className="px-3 pt-4 mt-2 border-t border-foreground/10 flex flex-col gap-2 text-xs text-foreground/55">
               <Link
-                href="https://github.com"
-                className="hover:text-foreground"
+                href="https://github.com/masonthemaker/palmprint"
+                className="inline-flex items-center gap-1.5 hover:text-foreground"
               >
+                <FaGithubSquare className="text-base text-emerald-600 dark:text-emerald-400" />
                 GitHub →
+              </Link>
+              <Link
+                href="https://discord.gg/Av22T2TY9D"
+                className="inline-flex items-center gap-1.5 hover:text-foreground"
+              >
+                <PiDiscordLogoDuotone className="text-base text-emerald-600 dark:text-emerald-400" />
+                Discord →
               </Link>
               <Link href="/" className="hover:text-foreground">
                 Back to demo →
@@ -116,6 +125,22 @@ export default function DocsShell({
             {" · "}
             <Link href="/docs/server-sdk" className="hover:text-foreground">
               Server SDK
+            </Link>
+            {" · "}
+            <Link
+              href="https://github.com/masonthemaker/palmprint"
+              className="inline-flex items-center gap-1.5 hover:text-foreground"
+            >
+              <FaGithubSquare className="text-base text-emerald-600 dark:text-emerald-400" />
+              GitHub
+            </Link>
+            {" · "}
+            <Link
+              href="https://discord.gg/Av22T2TY9D"
+              className="inline-flex items-center gap-1.5 hover:text-foreground"
+            >
+              <PiDiscordLogoDuotone className="text-base text-emerald-600 dark:text-emerald-400" />
+              Discord
             </Link>
           </span>
         </div>

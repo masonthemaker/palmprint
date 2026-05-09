@@ -15,7 +15,7 @@ The format is **lossless PNG** for photos and **native browser-encoded WebM** (o
 
 ## Storage interface
 
-Implementations live behind `CaptureStore` in [`src/lib/captureStore.ts`](https://github.com/your-org/palmprint/blob/main/src/lib/captureStore.ts):
+Implementations live behind `CaptureStore` in [`src/lib/captureStore.ts`](https://github.com/masonthemaker/palmprint/blob/main/src/lib/captureStore.ts):
 
 ```ts
 type CaptureStore = {

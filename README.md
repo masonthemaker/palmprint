@@ -82,7 +82,7 @@ wrap around them.
 | `@palmprint/server` | Node/Next.js challenge/session tokens, nonce replay protection, route helpers. |
 | `@palmprint/core` | Shared types and small token helpers. |
 | `@palmprint/widget` | Standalone script-tag bundle for non-React pages. |
-| `github.com/palmprint/palmprint-go` | Go server SDK with `net/http` handlers and middleware. |
+| `github.com/masonthemaker/palmprint/packages/go` | Go server SDK with `net/http` handlers and middleware. |
 
 ## Quickstart
 
@@ -268,7 +268,10 @@ authorize actions with the signed `pps.` session token.
 npm run dev
 npm run lint
 npm run build
+npm run build:packages
 npm run build:widget
+npm run test:conformance
+npm run test:go
 ```
 
 Go SDK:

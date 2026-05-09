@@ -1,3 +1,3 @@
-module github.com/palmprint/palmprint-go
+module github.com/masonthemaker/palmprint/packages/go
 
 go 1.22

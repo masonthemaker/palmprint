@@ -6,7 +6,7 @@ The HMAC sign / verify / replay-protection layer. Import it from
 mint challenges from your own routes.
 
 Using Go on the backend? See [Go SDK](/docs/go). It exposes the same signed
-challenge/redeem/session flow through `github.com/palmprint/palmprint-go`.
+challenge/redeem/session flow through `github.com/masonthemaker/palmprint/packages/go`.
 
 ## Setup
 
