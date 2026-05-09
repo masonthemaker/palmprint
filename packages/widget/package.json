@@ -1,0 +1,14 @@
+{
+  "name": "@palmprint/widget",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/palmprint-widget.js",
+  "exports": {
+    ".": "./dist/palmprint-widget.js"
+  },
+  "files": [
+    "dist/palmprint-widget.js",
+    "dist/SIZE.txt"
+  ]
+}

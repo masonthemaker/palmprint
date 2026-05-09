@@ -1,0 +1,344 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ---------- Docs prose ---------- */
+
+.prose-palmprint {
+  color: var(--foreground);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  max-width: 48rem;
+}
+
+.prose-palmprint > * + * {
+  margin-top: 1rem;
+}
+
+.prose-palmprint h1,
+.prose-palmprint h2,
+.prose-palmprint h3,
+.prose-palmprint h4 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  scroll-margin-top: 6rem;
+  position: relative;
+}
+
+.prose-palmprint h2 {
+  font-size: 1.5rem;
+  margin-top: 2.5rem;
+  margin-bottom: 0.5rem;
+  padding-top: 0.25rem;
+}
+
+.prose-palmprint h3 {
+  font-size: 1.15rem;
+  margin-top: 1.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.prose-palmprint h4 {
+  font-size: 1rem;
+  margin-top: 1.25rem;
+  margin-bottom: 0.25rem;
+  color: color-mix(in srgb, var(--foreground) 85%, transparent);
+}
+
+.prose-palmprint .heading-anchor {
+  margin-left: 0.5rem;
+  opacity: 0;
+  color: color-mix(in srgb, var(--foreground) 40%, transparent);
+  text-decoration: none;
+  font-weight: 400;
+  transition: opacity 0.15s;
+}
+
+.prose-palmprint h1:hover .heading-anchor,
+.prose-palmprint h2:hover .heading-anchor,
+.prose-palmprint h3:hover .heading-anchor,
+.prose-palmprint h4:hover .heading-anchor {
+  opacity: 1;
+}
+
+.prose-palmprint a {
+  color: rgb(4 120 87); /* emerald-700 */
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 25%, transparent);
+  text-underline-offset: 0.2em;
+}
+
+@media (prefers-color-scheme: dark) {
+  .prose-palmprint a {
+    color: rgb(52 211 153); /* emerald-400 */
+  }
+}
+
+.prose-palmprint a:hover {
+  text-decoration-color: currentColor;
+}
+
+.prose-palmprint p {
+  margin: 0;
+}
+
+.prose-palmprint strong {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.prose-palmprint code {
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85em;
+  background: color-mix(in srgb, var(--foreground) 8%, transparent);
+  padding: 0.12em 0.36em;
+  border-radius: 0.3rem;
+  border: 1px solid color-mix(in srgb, var(--foreground) 8%, transparent);
+}
+
+.prose-palmprint pre {
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  background: rgb(24 24 27);  /* zinc-900 */
+  color: rgb(212 212 216);    /* zinc-300 */
+  padding: 1rem 1.1rem;
+  border-radius: 0.75rem;
+  overflow-x: auto;
+  border: 1px solid color-mix(in srgb, var(--foreground) 10%, transparent);
+}
+
+.prose-palmprint .docs-code-block {
+  position: relative;
+}
+
+.prose-palmprint .docs-code-block pre {
+  margin: 0;
+  padding-right: 5.75rem;
+}
+
+.prose-palmprint .docs-code-copy {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.65rem;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 2rem;
+  padding: 0 0.65rem;
+  border-radius: 999px;
+  border: 1px solid rgb(16 185 129); /* emerald-500 */
+  background: rgb(16 185 129);
+  color: #02130c;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.25);
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.prose-palmprint .docs-code-copy:hover {
+  background: rgb(52 211 153); /* emerald-400 */
+  border-color: rgb(52 211 153);
+  transform: translateY(-1px);
+}
+
+.prose-palmprint .docs-code-copy:focus-visible {
+  outline: 2px solid rgb(110 231 183); /* emerald-300 */
+  outline-offset: 2px;
+}
+
+.prose-palmprint .docs-code-copy svg {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+}
+
+.prose-palmprint pre code {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+}
+
+/* ---------- Syntax highlighting (highlight.js tokens) ---------- */
+/* Base text color is already zinc-300 (#d4d4d8) set on <pre> */
+
+.prose-palmprint pre .hljs-comment,
+.prose-palmprint pre .hljs-quote {
+  color: #6b7280; /* zinc-500 — muted comments */
+  font-style: italic;
+}
+
+.prose-palmprint pre .hljs-keyword,
+.prose-palmprint pre .hljs-selector-tag,
+.prose-palmprint pre .hljs-built_in,
+.prose-palmprint pre .hljs-tag {
+  color: #c084fc; /* purple-400 — keywords */
+}
+
+.prose-palmprint pre .hljs-string,
+.prose-palmprint pre .hljs-template-literal,
+.prose-palmprint pre .hljs-template-tag,
+.prose-palmprint pre .hljs-addition {
+  color: #86efac; /* green-300 — strings */
+}
+
+.prose-palmprint pre .hljs-number,
+.prose-palmprint pre .hljs-literal {
+  color: #fb923c; /* orange-400 — numbers / booleans */
+}
+
+.prose-palmprint pre .hljs-title,
+.prose-palmprint pre .hljs-title.class_,
+.prose-palmprint pre .hljs-title.function_ {
+  color: #67e8f9; /* cyan-300 — function / class names */
+}
+
+.prose-palmprint pre .hljs-type,
+.prose-palmprint pre .hljs-class {
+  color: #fde68a; /* amber-200 — types */
+}
+
+.prose-palmprint pre .hljs-attr,
+.prose-palmprint pre .hljs-attribute,
+.prose-palmprint pre .hljs-selector-attr,
+.prose-palmprint pre .hljs-variable,
+.prose-palmprint pre .hljs-name {
+  color: #93c5fd; /* blue-300 — attributes / variables */
+}
+
+.prose-palmprint pre .hljs-params {
+  color: #d1d5db; /* gray-300 */
+}
+
+.prose-palmprint pre .hljs-regexp {
+  color: #f9a8d4; /* pink-300 */
+}
+
+.prose-palmprint pre .hljs-symbol,
+.prose-palmprint pre .hljs-bullet {
+  color: #6ee7b7; /* emerald-300 */
+}
+
+.prose-palmprint pre .hljs-section,
+.prose-palmprint pre .hljs-meta {
+  color: #94a3b8; /* slate-400 */
+}
+
+.prose-palmprint pre .hljs-deletion {
+  color: #fca5a5; /* red-300 */
+}
+
+.prose-palmprint pre .hljs-emphasis {
+  font-style: italic;
+}
+
+.prose-palmprint pre .hljs-strong {
+  font-weight: 700;
+}
+
+.prose-palmprint ul,
+.prose-palmprint ol {
+  padding-left: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.prose-palmprint ul {
+  list-style: disc;
+}
+
+.prose-palmprint ol {
+  list-style: decimal;
+}
+
+.prose-palmprint li {
+  padding-left: 0.25rem;
+}
+
+.prose-palmprint li > ul,
+.prose-palmprint li > ol {
+  margin-top: 0.4rem;
+}
+
+.prose-palmprint blockquote {
+  border-left: 3px solid color-mix(in srgb, var(--foreground) 25%, transparent);
+  padding: 0.25rem 0 0.25rem 1rem;
+  color: color-mix(in srgb, var(--foreground) 75%, transparent);
+  font-style: normal;
+}
+
+.prose-palmprint blockquote p + p {
+  margin-top: 0.5rem;
+}
+
+.prose-palmprint hr {
+  border: 0;
+  border-top: 1px solid color-mix(in srgb, var(--foreground) 10%, transparent);
+  margin: 2.5rem 0;
+}
+
+.prose-palmprint table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.prose-palmprint thead th {
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 1px solid color-mix(in srgb, var(--foreground) 15%, transparent);
+  padding: 0.5rem 0.75rem;
+  color: color-mix(in srgb, var(--foreground) 75%, transparent);
+}
+
+.prose-palmprint tbody td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--foreground) 8%, transparent);
+  vertical-align: top;
+}
+
+.prose-palmprint tbody tr:hover td {
+  background: color-mix(in srgb, var(--foreground) 3%, transparent);
+}
+
+.prose-palmprint kbd {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.75em;
+  border: 1px solid color-mix(in srgb, var(--foreground) 15%, transparent);
+  border-bottom-width: 2px;
+  border-radius: 0.3rem;
+  padding: 0.05em 0.4em;
+  background: color-mix(in srgb, var(--foreground) 5%, transparent);
+}

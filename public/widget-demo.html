@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Palmprint Widget — script-tag demo</title>
+    <style>
+      :root {
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+        color-scheme: light dark;
+      }
+      body {
+        margin: 0;
+        padding: 3rem 1.5rem;
+        background: linear-gradient(180deg, #ecfdf5, #f4f4f5);
+        min-height: 100vh;
+        color: #18181b;
+      }
+      main {
+        max-width: 56rem;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+      }
+      h1 {
+        font-size: 1.75rem;
+        margin: 0 0 0.25rem;
+      }
+      p {
+        margin: 0.25rem 0;
+        color: #3f3f46;
+      }
+      section {
+        background: white;
+        border: 1px solid #e4e4e7;
+        border-radius: 1rem;
+        padding: 1.25rem 1.5rem;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+      }
+      pre {
+        background: #18181b;
+        color: #d4d4d8;
+        padding: 1rem;
+        border-radius: 0.75rem;
+        overflow-x: auto;
+        font-size: 0.8rem;
+        line-height: 1.5;
+      }
+      code {
+        font-family:
+          ui-monospace, "SF Mono", Menlo, monospace;
+      }
+      .inline-target {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.75rem 1rem;
+        border: 1px dashed #a1a1aa;
+        border-radius: 0.75rem;
+        background: #fafafa;
+      }
+      .log {
+        font-size: 0.85rem;
+        background: #f4f4f5;
+        border-radius: 0.5rem;
+        padding: 0.75rem;
+        max-height: 12rem;
+        overflow: auto;
+        white-space: pre-wrap;
+        word-break: break-all;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>🌴 Palmprint widget — script-tag demo</h1>
+        <p>
+          One <code>&lt;script&gt;</code> tag, no bundler, no React in the host
+          page. Mounts a floating verify button at the configured corner and
+          fires <code>palmprint:verified</code> on the window when it passes.
+          The event contains a signed session token when
+          <code>data-api-base</code> points at your Palmprint server routes.
+        </p>
+      </header>
+
+      <section>
+        <h2 style="margin: 0 0 0.5rem; font-size: 1.1rem">Floating button</h2>
+        <p>
+          The button at the <strong>bottom-right</strong> of this page is
+          mounted by the script tag below. Open DevTools — there is no
+          Palmprint markup in the page source.
+        </p>
+        <pre><code>&lt;script
+  src="/dist/palmprint-widget.js"
+  data-position="bottom-right"
+  data-theme="emerald"
+  data-shape="pill"
+  data-size="md"
+  data-level="medium"
+  data-mode="both"
+  data-num-tests="2"
+  data-capture-mode="off"
+  data-api-base="/api/palmprint"
+  data-label="Verify with Palmprint"
+  defer
+&gt;&lt;/script&gt;</code></pre>
+      </section>
+
+      <section>
+        <h2 style="margin: 0 0 0.5rem; font-size: 1.1rem">
+          Inline mount via <code>data-target</code>
+        </h2>
+        <p>
+          Or mount into a specific element by passing a CSS selector. The
+          button below was rendered into <code>#inline-slot</code>.
+        </p>
+        <div class="inline-target">
+          <span>Sign-up form gate:</span>
+          <span id="inline-slot"></span>
+        </div>
+        <pre><code>&lt;script src="/dist/palmprint-widget.js"
+        data-target="#inline-slot"
+        data-shape="rounded"
+        data-theme="dark"
+        data-size="sm"
+        defer&gt;&lt;/script&gt;</code></pre>
+      </section>
+
+      <section>
+        <h2 style="margin: 0 0 0.5rem; font-size: 1.1rem">
+          <code>palmprint:verified</code> events
+        </h2>
+        <p>
+          Both buttons dispatch a <code>palmprint:verified</code>
+          <code>CustomEvent</code> on success. Tokens land here:
+        </p>
+        <div id="event-log" class="log">no events yet…</div>
+      </section>
+    </main>
+
+    <!-- Floating widget at bottom-right. -->
+    <script
+      src="/dist/palmprint-widget.js"
+      data-position="bottom-right"
+      data-theme="emerald"
+      data-shape="pill"
+      data-size="md"
+      data-level="medium"
+      data-mode="both"
+      data-num-tests="2"
+      data-capture-mode="off"
+      data-api-base="/api/palmprint"
+      data-label="Verify with Palmprint"
+      defer
+    ></script>
+
+    <!-- Inline mount into #inline-slot. -->
+    <script
+      src="/dist/palmprint-widget.js"
+      data-target="#inline-slot"
+      data-shape="rounded"
+      data-theme="dark"
+      data-size="sm"
+      data-api-base="/api/palmprint"
+      data-label="Prove you're human"
+      defer
+    ></script>
+
+    <script>
+      const log = document.getElementById("event-log");
+      let count = 0;
+      window.addEventListener("palmprint:verified", (e) => {
+        count++;
+        const { sessionToken, clientToken, captures } = e.detail || {};
+        const line =
+          `[${count}] sessionToken=${sessionToken || "(unsigned mode)"}\n` +
+          `    clientToken=${clientToken}\n` +
+          `    captures=${(captures || []).length}`;
+        if (log.textContent.startsWith("no events")) log.textContent = "";
+        log.textContent = line + "\n\n" + log.textContent;
+      });
+    </script>
+  </body>
+</html>
