@@ -3,7 +3,8 @@ import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 var LEVEL_RANK = {
   low: 0,
   medium: 1,
-  high: 2
+  high: 2,
+  extra: 3
 };
 var PREFIX_CHALLENGE = "ppc";
 var PREFIX_SESSION = "pps";

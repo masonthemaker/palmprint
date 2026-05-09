@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
   // is bound to this specific request.
   const challenge = palmprint().issueChallenge({
     requiredLevel: consent.level,
-    requiredSteps: consent.level === "high" ? 3 : 2,
+    requiredSteps: consent.level === "extra" ? 4 : consent.level === "high" ? 3 : 2,
     ttlSeconds: 600,
     subject: `consent:${consent.id}`,
     context: {

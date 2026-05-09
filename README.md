@@ -66,7 +66,7 @@ wrap around them.
 - **Gesture verification:** MediaPipe hand gestures plus face blendshape checks.
 - **Random prompt rotation:** prompts regenerate if not completed quickly, making
   pre-rendered spoofing harder.
-- **Security levels:** low, medium, and high challenge presets.
+- **Security levels:** easy, medium, hard, and extra-hard challenge presets.
 - **Signed server flow:** challenge token -> client token -> signed session.
 - **Replay protection:** challenge nonces are consumed once.
 - **React provider:** call `verify()` from any action.
@@ -186,6 +186,7 @@ Use Palmprint on a non-React site:
   data-api-base="https://your-app.example/api/palmprint"
   data-widget="checkbox"
   data-label="I'm not a robot"
+  data-challenge-style="standard"
   defer
 ></script>
 
@@ -198,7 +199,8 @@ Use Palmprint on a non-React site:
 ```
 
 The `/widget` page generates these snippets for you, including the server URL,
-theme, challenge level, capture mode, and checkbox/button design.
+theme, challenge level, challenge style, capture mode, and checkbox/button
+design.
 
 ## Go Backend
 
@@ -252,8 +254,8 @@ Palmprint combines a few simple pieces:
 - MediaPipe detects hands, hand landmarks, face landmarks, and face expressions.
 - The challenge generator chooses randomized prompts based on the selected
   security level.
-- Higher levels require multiple simultaneous signals, like a hand gesture plus
-  a facial expression.
+- Higher levels add smarter challenge shapes: left/right hands, ordered
+  temporal prompts, and extra-hard mixed sequences.
 - Prompts rotate if the user does not complete them quickly.
 - The server binds successful browser verification to a signed challenge nonce.
 - The nonce is consumed during redeem, so the same challenge cannot be reused.

@@ -34,6 +34,7 @@ export function PalmprintGuard({
   numTests,
   mode,
   captureMode,
+  challengeStyle,
   reason = "Verification required",
   description,
   onVerified,
@@ -55,6 +56,7 @@ export function PalmprintGuard({
         numTests,
         mode,
         captureMode,
+        challengeStyle,
         reason,
         description,
       });
@@ -71,6 +73,7 @@ export function PalmprintGuard({
     numTests,
     mode,
     captureMode,
+    challengeStyle,
     reason,
     description,
     onVerified,

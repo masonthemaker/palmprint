@@ -11,6 +11,7 @@ import {
   type CaptchaCheckboxConfig,
   type CaptchaTheme,
   type CaptureMode,
+  type ChallengeStyle,
   type Mode,
   type SecurityLevel,
   type WidgetConfig,
@@ -20,6 +21,13 @@ import {
 } from "@palmprint/react";
 
 type WidgetKind = "button" | "checkbox";
+
+const LEVEL_STYLE: Record<SecurityLevel, ChallengeStyle> = {
+  low: "standard",
+  medium: "handedness",
+  high: "temporal",
+  extra: "max",
+};
 
 type ScriptPosition =
   | "bottom-right"
@@ -44,6 +52,7 @@ function generateCaptchaReactSnippet(c: CaptchaCheckboxConfig): string {
     mode: ${JSON.stringify(c.mode)},
     numTests: ${c.numTests},
     captureMode: ${JSON.stringify(c.captureMode)},
+    challengeStyle: ${JSON.stringify(c.challengeStyle)},
   }}
   onVerified={({ sessionToken, captures }) => {
     // Send sessionToken to protected endpoints as Authorization: Bearer <token>.
@@ -69,6 +78,7 @@ function generateReactSnippet(c: WidgetConfig, apiBase: string): string {
     mode: ${JSON.stringify(c.mode)},
     numTests: ${c.numTests},
     captureMode: ${JSON.stringify(c.captureMode)},
+    challengeStyle: ${JSON.stringify(c.challengeStyle)},
   }}
   onVerified={({ sessionToken, captures }) => {
     // Send sessionToken to protected endpoints as Authorization: Bearer <token>.
@@ -104,6 +114,7 @@ function generateScriptSnippet(
     ["data-mode", c.mode],
     ["data-num-tests", c.numTests],
     ["data-capture-mode", c.captureMode],
+    ["data-challenge-style", c.challengeStyle],
     ["data-api-base", apiBase],
   );
   const lines = attrs.map(([k, v]) => `  ${k}="${String(v)}"`);
@@ -152,6 +163,7 @@ function generateCaptchaScriptSnippet(
     ["data-mode", c.mode],
     ["data-num-tests", c.numTests],
     ["data-capture-mode", c.captureMode],
+    ["data-challenge-style", c.challengeStyle],
     ["data-api-base", apiBase],
   );
   const lines = attrs
@@ -278,11 +290,13 @@ export default function WidgetConfiguratorPage() {
     value: CaptchaCheckboxConfig[K],
   ) => setCaptchaConfig((c) => ({ ...c, [key]: value }));
 
-  // Challenge settings (level, mode, numTests, captureMode) update both
+  // Challenge settings update both
   // configs so toggling widget kind doesn't lose settings.
   const setSharedLevel = (v: SecurityLevel) => {
     update("level", v);
     updateCaptcha("level", v);
+    setSharedChallengeStyle(LEVEL_STYLE[v]);
+    if (v === "extra") setSharedNumTests(Math.max(config.numTests, 4));
   };
   const setSharedMode = (v: Mode) => {
     update("mode", v);
@@ -296,6 +310,13 @@ export default function WidgetConfiguratorPage() {
     update("captureMode", v);
     updateCaptcha("captureMode", v);
   };
+  const setSharedChallengeStyle = (v: ChallengeStyle) => {
+    update("challengeStyle", v);
+    updateCaptcha("challengeStyle", v);
+    if (v !== "max" && config.numTests > 5) setSharedNumTests(5);
+  };
+
+  const maxTests = config.challengeStyle === "max" ? 7 : 5;
 
   const handleKindChange = (k: WidgetKind) => {
     setKind(k);
@@ -663,10 +684,15 @@ export default function WidgetConfiguratorPage() {
 
           <Field label="Security level">
             <Pills<SecurityLevel>
-              options={["low", "medium", "high"] as const}
+              options={["low", "medium", "high", "extra"] as const}
               value={config.level}
               onChange={setSharedLevel}
-              labels={{ low: "Low", medium: "Medium", high: "High" }}
+              labels={{
+                low: "Easy",
+                medium: "Medium",
+                high: "Hard",
+                extra: "Extra",
+              }}
             />
           </Field>
 
@@ -680,13 +706,49 @@ export default function WidgetConfiguratorPage() {
           </Field>
 
           <Field
+            label="Challenge style"
+            hint={
+              config.challengeStyle === "standard"
+                ? "Normal gestures, with I Love You included in the hand pool."
+                : config.challengeStyle === "handedness"
+                  ? "Adds left/right hand requirements to hand prompts."
+                  : config.challengeStyle === "two-hand"
+                    ? "Requires both hands; Both mode adds one face prompt too."
+                    : config.challengeStyle === "temporal"
+                      ? "Ordered prompts such as Thumbs Up then Thumbs Down."
+                      : "Ordered prompts + left/right + both hands + Both mode face prompt + up to 7 tests."
+            }
+          >
+            <Pills<ChallengeStyle>
+              options={
+                [
+                  "standard",
+                  "handedness",
+                  "two-hand",
+                  "temporal",
+                  "max",
+                ] as const
+              }
+              value={config.challengeStyle}
+              onChange={setSharedChallengeStyle}
+              labels={{
+                standard: "Standard",
+                handedness: "Left/right",
+                "two-hand": "Two hand",
+                temporal: "Then",
+                max: "Max",
+              }}
+            />
+          </Field>
+
+          <Field
             label={`Number of tests (${config.numTests})`}
-            hint="1–5 challenges in sequence."
+            hint={`1–${maxTests} challenges in sequence.`}
           >
             <input
               type="range"
               min={1}
-              max={5}
+              max={maxTests}
               step={1}
               value={config.numTests}
               onChange={(e) => setSharedNumTests(Number(e.target.value))}

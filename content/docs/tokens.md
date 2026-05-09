@@ -35,9 +35,9 @@ Fields:
 | `iat` | number | Issued-at, Unix seconds. |
 | `exp` | number | Expiry. The browser sets this to `iat + 300` (5 min). |
 | `nonce` | string | Random per-token nonce (browser-generated). |
-| `level` | string | `"low" \| "medium" \| "high"` — the level the user actually completed. |
+| `level` | string | `"low" \| "medium" \| "high" \| "extra"` — the level the user actually completed. |
 | `steps` | number | How many distinct challenges they passed. |
-| `items_per_step` | number | 1 (low) or 2 (medium / high). |
+| `items_per_step` | number | Maximum simultaneous prompts per phase. Usually 1 (easy / temporal hard), 2 (medium), or 3 (extra hard in `both` mode). |
 | `challenge_nonce` | string | The server-issued challenge nonce. **Critical** — this is what binds the verification to a specific request. |
 
 This token is **not signed**. Anyone could forge one. It exists as input to `palmprint().issueSession({ challengeToken, clientToken })` — the SDK validates the embedded `challenge_nonce` matches the challenge being redeemed before issuing a real session.

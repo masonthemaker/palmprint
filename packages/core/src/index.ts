@@ -1,4 +1,4 @@
-export type SecurityLevel = "low" | "medium" | "high";
+export type SecurityLevel = "low" | "medium" | "high" | "extra";
 export type Mode = "hand" | "face" | "both";
 export type CaptureMode = "off" | "photo" | "video";
 
@@ -73,4 +73,3 @@ export function base64UrlDecodeToString(input: string): string {
   if (typeof atob === "function") return atob(padded + padding);
   return Buffer.from(padded + padding, "base64").toString("utf8");
 }
-

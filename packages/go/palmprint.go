@@ -25,6 +25,7 @@ const (
 	LevelLow    SecurityLevel = "low"
 	LevelMedium SecurityLevel = "medium"
 	LevelHigh   SecurityLevel = "high"
+	LevelExtra  SecurityLevel = "extra"
 
 	prefixChallenge = "ppc"
 	prefixSession   = "pps"
@@ -39,6 +40,7 @@ var levelRank = map[SecurityLevel]int{
 	LevelLow:    0,
 	LevelMedium: 1,
 	LevelHigh:   2,
+	LevelExtra:  3,
 }
 
 // ErrorCode is a stable machine-readable Palmprint error code.

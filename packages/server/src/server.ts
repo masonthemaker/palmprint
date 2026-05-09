@@ -39,6 +39,7 @@ const LEVEL_RANK: Record<SecurityLevel, number> = {
   low: 0,
   medium: 1,
   high: 2,
+  extra: 3,
 };
 
 const PREFIX_CHALLENGE = "ppc";

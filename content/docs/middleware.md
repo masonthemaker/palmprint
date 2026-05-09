@@ -71,7 +71,7 @@ import { tryVerifyRequest } from "@/lib/palmprintMiddleware";
 
 export async function GET(req: NextRequest) {
   const session = tryVerifyRequest(req); // SessionPayload | null
-  if (session?.level === "high") {
+  if (session?.level === "high" || session?.level === "extra") {
     // serve premium data
   }
   // serve standard response

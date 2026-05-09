@@ -14,7 +14,8 @@ var PalmprintTokenError = class extends Error {
 var LEVEL_RANK = {
   low: 0,
   medium: 1,
-  high: 2
+  high: 2,
+  extra: 3
 };
 function extractToken(req) {
   const auth = req.headers.get("authorization");

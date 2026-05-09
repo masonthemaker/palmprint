@@ -10,12 +10,14 @@ export type Capture = {
     url: string;
     ts: number;
 };
+export type ChallengeStyle = "standard" | "handedness" | "two-hand" | "temporal" | "max";
 export declare function captureFileName(c: Capture): string;
 export type PalmprintProps = {
     initialLevel?: SecurityLevel;
     initialMode?: Mode;
     initialNumTests?: number;
     initialCaptureMode?: CaptureMode;
+    initialChallengeStyle?: ChallengeStyle;
     /** Hides the settings gear button (settings still take effect from initial* props). */
     lockSettings?: boolean;
     /** Auto-start the verification once models load. */
@@ -36,5 +38,5 @@ export type PalmprintProps = {
      */
     challengeNonce?: string;
 };
-export default function Palmprint({ initialLevel, initialMode, initialNumTests, initialCaptureMode, lockSettings, autoStart, compact, onCancel, onVerified, challengeNonce, }?: PalmprintProps): import("react/jsx-runtime").JSX.Element;
+export default function Palmprint({ initialLevel, initialMode, initialNumTests, initialCaptureMode, initialChallengeStyle, lockSettings, autoStart, compact, onCancel, onVerified, challengeNonce, }?: PalmprintProps): import("react/jsx-runtime").JSX.Element;
 //# sourceMappingURL=Palmprint.d.ts.map

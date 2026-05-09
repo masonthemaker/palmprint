@@ -3,7 +3,7 @@ export { PalmprintProvider, usePalmprint, usePalmprintGate, } from "./PalmprintP
 export { PalmprintGuard } from "./PalmprintGuard";
 export { default as VerifyWidget } from "./VerifyWidget";
 export { default as CaptchaCheckbox } from "./CaptchaCheckbox";
-export type { Capture, CaptureMode, Mode, PalmprintProps, SecurityLevel, } from "./Palmprint";
+export type { Capture, CaptureMode, ChallengeStyle, Mode, PalmprintProps, SecurityLevel, } from "./Palmprint";
 export { captureFileName } from "./Palmprint";
 export type { PalmprintProviderProps, PalmprintContextValue, RequireOptions, VerificationResult, } from "./PalmprintProvider";
 export type { PalmprintGuardProps } from "./PalmprintGuard";

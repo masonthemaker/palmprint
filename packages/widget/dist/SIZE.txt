@@ -1,4 +1,4 @@
 === palmprint-widget.js ===
-  raw:        395.8 KB
-  gzipped:    118.0 KB
-  css inline: 36.6 KB (already counted in raw)
+  raw:        401.6 KB
+  gzipped:    119.3 KB
+  css inline: 39.1 KB (already counted in raw)

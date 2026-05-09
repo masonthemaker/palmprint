@@ -6,6 +6,7 @@ import Palmprint, {
   captureFileName,
   type Capture,
   type CaptureMode,
+  type ChallengeStyle,
   type Mode,
   type SecurityLevel,
 } from "./Palmprint";
@@ -26,6 +27,7 @@ export type WidgetConfig = {
   mode: Mode;
   numTests: number;
   captureMode: CaptureMode;
+  challengeStyle: ChallengeStyle;
 };
 
 export const DEFAULT_WIDGET_CONFIG: WidgetConfig = {
@@ -40,6 +42,7 @@ export const DEFAULT_WIDGET_CONFIG: WidgetConfig = {
   mode: "both",
   numTests: 2,
   captureMode: "off",
+  challengeStyle: "handedness",
 };
 
 const SHAPE_CLASS: Record<WidgetShape, string> = {
@@ -298,6 +301,7 @@ export default function VerifyWidget({
               initialMode={config.mode}
               initialNumTests={config.numTests}
               initialCaptureMode={config.captureMode}
+              initialChallengeStyle={config.challengeStyle}
               challengeNonce={flow?.challengeNonce}
               lockSettings
               compact

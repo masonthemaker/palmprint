@@ -67,10 +67,11 @@ In production you would dispatch `message_to_human` over SMS / email / push. In 
 |---|---|---|
 | `pk_demo_low` | low | medium |
 | `pk_demo_med` | medium | high |
-| `pk_demo_high` | high | high |
+| `pk_demo_high` | high | extra |
+| `pk_demo_extra` | extra | extra |
 | anything else | — | `401 Unknown api_key` |
 
-Payment requirement bumps the level up by one notch unless already at high. The verify page uses the *derived* level to configure its Palmprint challenge, so high-stakes flows automatically demand more challenges and rotate prompts faster.
+Payment requirement bumps the level up by one notch unless already at extra. The verify page uses the *derived* level to configure its Palmprint challenge, so high-stakes flows automatically demand more challenges, temporal prompts, and faster rotation.
 
 ## Flow
 

@@ -23,7 +23,12 @@ export type CaptchaCheckboxConfig = {
   fullWidth?: boolean;
 } & Pick<
   RequireOptions,
-  "level" | "mode" | "numTests" | "captureMode" | "challengeNonce"
+  | "level"
+  | "mode"
+  | "numTests"
+  | "captureMode"
+  | "challengeStyle"
+  | "challengeNonce"
 >;
 
 export const DEFAULT_CAPTCHA_CONFIG: Required<
@@ -32,7 +37,10 @@ export const DEFAULT_CAPTCHA_CONFIG: Required<
     "label" | "verifyingLabel" | "verifiedLabel" | "failedLabel" | "theme" | "fullWidth"
   >
 > &
-  Pick<CaptchaCheckboxConfig, "level" | "mode" | "numTests" | "captureMode"> = {
+  Pick<
+    CaptchaCheckboxConfig,
+    "level" | "mode" | "numTests" | "captureMode" | "challengeStyle"
+  > = {
   label: "I'm not a robot",
   verifyingLabel: "Verifying…",
   verifiedLabel: "Verified",
@@ -42,6 +50,8 @@ export const DEFAULT_CAPTCHA_CONFIG: Required<
   level: "medium",
   mode: "both",
   numTests: 2,
+  captureMode: "off",
+  challengeStyle: "handedness",
 };
 
 type Phase = "idle" | "loading" | "verified" | "error";
@@ -70,6 +80,7 @@ export default function CaptchaCheckbox({
         mode: cfg.mode,
         numTests: cfg.numTests,
         captureMode: cfg.captureMode,
+        challengeStyle: cfg.challengeStyle,
         challengeNonce: cfg.challengeNonce,
         reason: "Verify you're human",
         description: "Complete the Palmprint challenge to continue.",

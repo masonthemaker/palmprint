@@ -42,6 +42,11 @@ export const DOC_NAV: DocSection[] = [
         description: "Provider, hook, guard, and widget components.",
       },
       {
+        slug: "challenge-levels",
+        title: "Challenge levels",
+        description: "Easy through extra-hard presets and combination counts.",
+      },
+      {
         slug: "script-tag",
         title: "Script-tag bundle",
         description: "Standalone IIFE for non-React sites.",

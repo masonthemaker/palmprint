@@ -1,5 +1,5 @@
 import { type ReactNode } from "react";
-import { type Capture, type CaptureMode, type Mode, type SecurityLevel } from "./Palmprint";
+import { type Capture, type CaptureMode, type ChallengeStyle, type Mode, type SecurityLevel } from "./Palmprint";
 /** What the caller actually gets from `requireVerification`. */
 export type VerificationResult = {
     /**
@@ -29,6 +29,7 @@ export type RequireOptions = {
     numTests?: number;
     mode?: Mode;
     captureMode?: CaptureMode;
+    challengeStyle?: ChallengeStyle;
     /** Headline shown above the verification modal. */
     reason?: string;
     /** Subtitle shown above the verification modal. */

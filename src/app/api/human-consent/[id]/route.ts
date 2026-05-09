@@ -3,6 +3,13 @@ import { getConsent, updateConsent } from "@/lib/consentStore";
 import { palmprint } from "@/lib/palmprintInstance";
 import { PalmprintTokenError } from "@/lib/palmprintServer";
 
+const LEVEL_RANK = {
+  low: 0,
+  medium: 1,
+  high: 2,
+  extra: 3,
+} as const;
+
 export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> },
@@ -83,10 +90,7 @@ export async function POST(
     // Level enforcement (also enforced at redeem time, but defense in depth).
     const need = c.level;
     const got = session.level;
-    if (
-      (need === "high" && got !== "high") ||
-      (need === "medium" && got === "low")
-    ) {
+    if (LEVEL_RANK[got] < LEVEL_RANK[need]) {
       return NextResponse.json(
         {
           error: `Insufficient verification level: required ${need}, got ${got}`,

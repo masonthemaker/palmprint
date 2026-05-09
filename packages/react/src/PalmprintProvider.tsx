@@ -14,6 +14,7 @@ import Palmprint, {
   captureFileName,
   type Capture,
   type CaptureMode,
+  type ChallengeStyle,
   type Mode,
   type SecurityLevel,
 } from "./Palmprint";
@@ -48,6 +49,7 @@ export type RequireOptions = {
   numTests?: number;
   mode?: Mode;
   captureMode?: CaptureMode;
+  challengeStyle?: ChallengeStyle;
   /** Headline shown above the verification modal. */
   reason?: string;
   /** Subtitle shown above the verification modal. */
@@ -332,6 +334,7 @@ export function PalmprintProvider({
               initialMode={opts.mode ?? "both"}
               initialNumTests={opts.numTests}
               initialCaptureMode={opts.captureMode ?? "off"}
+              initialChallengeStyle={opts.challengeStyle}
               challengeNonce={opts.challengeNonce}
               lockSettings
               compact

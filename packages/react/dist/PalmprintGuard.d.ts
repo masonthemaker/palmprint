@@ -13,5 +13,5 @@ export type PalmprintGuardProps = RequireOptions & {
  * Page-level Palmprint gate. Renders {children} only after the user has
  * passed verification. Use for sensitive routes like password reset.
  */
-export declare function PalmprintGuard({ children, level, numTests, mode, captureMode, reason, description, onVerified, fallback, autoOpen, }: PalmprintGuardProps): import("react/jsx-runtime").JSX.Element;
+export declare function PalmprintGuard({ children, level, numTests, mode, captureMode, challengeStyle, reason, description, onVerified, fallback, autoOpen, }: PalmprintGuardProps): import("react/jsx-runtime").JSX.Element;
 //# sourceMappingURL=PalmprintGuard.d.ts.map

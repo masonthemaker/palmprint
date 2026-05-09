@@ -1,7 +1,7 @@
 // In-memory store for agent consent requests. Survives Next dev hot reloads
 // via globalThis pinning. Not suitable for production — replace with a DB.
 
-export type SecurityLevel = "low" | "medium" | "high";
+export type SecurityLevel = "low" | "medium" | "high" | "extra";
 
 export type ConsentStatus =
   | "pending"
@@ -46,6 +46,7 @@ const KNOWN_KEYS: Record<string, { tier: SecurityLevel; label: string }> = {
   pk_demo_low: { tier: "low", label: "Low-tier demo key" },
   pk_demo_med: { tier: "medium", label: "Mid-tier demo key" },
   pk_demo_high: { tier: "high", label: "High-tier demo key" },
+  pk_demo_extra: { tier: "extra", label: "Extra-tier demo key" },
 };
 
 export function isKnownApiKey(apiKey: string): boolean {
@@ -64,7 +65,8 @@ export function deriveLevel(
   const tier = KNOWN_KEYS[apiKey]?.tier ?? "low";
   if (!paymentRequired) return tier;
   if (tier === "low") return "medium";
-  return "high";
+  if (tier === "medium") return "high";
+  return "extra";
 }
 
 function shortId(): string {

@@ -11,11 +11,11 @@ npm run build:widget
 ```
 
 Sizes (current):
-- raw: ~396 KB
-- gzipped: ~118 KB
-- inlined CSS portion: ~37 KB (already counted)
+- raw: ~402 KB
+- gzipped: ~119 KB
+- inlined CSS portion: ~39 KB (already counted)
 
-The MediaPipe WASM and ML models still load lazily from Google's CDN at first verify, so 118 KB gz is the actual upfront budget on the integrator's site.
+The MediaPipe WASM and ML models still load lazily from Google's CDN at first verify, so 119 KB gz is the actual upfront budget on the integrator's site.
 
 ## Use it on any page
 
@@ -37,6 +37,7 @@ is on the same app, or a full URL when embedding on another domain.
   data-mode="both"
   data-num-tests="2"
   data-capture-mode="off"
+  data-challenge-style="standard"
   data-label="Verify with Palmprint"
   defer
 ></script>
@@ -69,6 +70,7 @@ signed challenge/redeem flow and dispatches the same `palmprint:verified` event.
   data-mode="both"
   data-num-tests="2"
   data-capture-mode="off"
+  data-challenge-style="standard"
   defer
 ></script>
 ```
@@ -91,6 +93,23 @@ If `data-api-base="false"`, the bundle runs in manual mode and dispatches only
 the unsigned `clientToken`. That is useful for demos and custom integrations,
 but the signed flow above is the safe default.
 
+## Challenge options
+
+`data-challenge-style` accepts:
+
+- `standard` (default): normal Palmprint behavior, with MediaPipe's canned `ILoveYou` gesture included in the hand pool.
+- `handedness`: prompts can require left or right hand.
+- `two-hand`: prompts require two simultaneous hand gestures; `data-mode="both"` also adds a face prompt.
+- `temporal`: prompts must be completed in order, such as `Thumbs Up` then `Thumbs Down`.
+- `max`: combines ordered prompts, left/right hands, two-hand prompts, `both` mode face prompts, and allows up to 7 tests.
+
+`data-num-tests` defaults to `2`. Use `1` through `5` for normal styles, or up to `7` with `data-challenge-style="max"`.
+
+`data-level` accepts `low`, `medium`, `high`, or `extra`. The builder labels
+those as Easy, Medium, Hard, and Extra Hard.
+
+See [Challenge levels](/docs/challenge-levels) for the preset behavior and maximum combination counts.
+
 ## Position options
 
 `data-position` accepts:
@@ -112,6 +131,7 @@ window.Palmprint.mount(host, {
   apiBase: "https://your-app.example/api/palmprint",
   level: "high",
   theme: "dark",
+  challengeStyle: "max",
   // ...partial WidgetConfig
 });
 
@@ -122,6 +142,7 @@ window.Palmprint.mount(host, {
     label: "I'm not a robot",
     theme: "light",
     level: "medium",
+    challengeStyle: "handedness",
   },
 });
 ```

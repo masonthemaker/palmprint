@@ -13,7 +13,12 @@ import CaptchaCheckbox, {
   type CaptchaTheme,
 } from "../packages/react/src/CaptchaCheckbox";
 import { PalmprintProvider } from "../packages/react/src/PalmprintProvider";
-import type { CaptureMode, Mode, SecurityLevel } from "../packages/react/src/Palmprint";
+import type {
+  CaptureMode,
+  ChallengeStyle,
+  Mode,
+  SecurityLevel,
+} from "../packages/react/src/Palmprint";
 import widgetCss from "./.cache/widget.css";
 
 type Position =
@@ -100,6 +105,7 @@ function parseConfig(script: HTMLScriptElement | null): {
   if (ds.mode) config.mode = ds.mode as Mode;
   if (ds.numTests) config.numTests = Number(ds.numTests);
   if (ds.captureMode) config.captureMode = ds.captureMode as CaptureMode;
+  if (ds.challengeStyle) config.challengeStyle = ds.challengeStyle as ChallengeStyle;
   if (ds.label) captchaConfig.label = ds.label;
   if (ds.verifyingLabel) captchaConfig.verifyingLabel = ds.verifyingLabel;
   if (ds.verifiedLabel) captchaConfig.verifiedLabel = ds.verifiedLabel;
@@ -111,6 +117,8 @@ function parseConfig(script: HTMLScriptElement | null): {
   if (ds.mode) captchaConfig.mode = ds.mode as Mode;
   if (ds.numTests) captchaConfig.numTests = Number(ds.numTests);
   if (ds.captureMode) captchaConfig.captureMode = ds.captureMode as CaptureMode;
+  if (ds.challengeStyle)
+    captchaConfig.challengeStyle = ds.challengeStyle as ChallengeStyle;
   if (ds.position) position = ds.position as Position;
   if (ds.target) target = ds.target;
   if (ds.apiBase) apiBase = ds.apiBase === "false" ? false : ds.apiBase;

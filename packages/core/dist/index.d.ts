@@ -1,4 +1,4 @@
-export type SecurityLevel = "low" | "medium" | "high";
+export type SecurityLevel = "low" | "medium" | "high" | "extra";
 export type Mode = "hand" | "face" | "both";
 export type CaptureMode = "off" | "photo" | "video";
 export type ChallengePayload = {

@@ -57,15 +57,39 @@ var FACE_EMOJI = {
   WinkRight: "\u{1F609}",
   BrowsUp: "\u{1F928}"
 };
+var HAND_SIDE_LABEL = {
+  Left: "Left hand",
+  Right: "Right hand"
+};
 var SECURITY = {
-  low: { itemsPerStep: 1, rotateMs: 8e3, defaultTests: 2, label: "Low" },
+  low: {
+    itemsPerStep: 1,
+    rotateMs: 8e3,
+    defaultTests: 2,
+    label: "Easy",
+    defaultStyle: "standard"
+  },
   medium: {
     itemsPerStep: 2,
     rotateMs: 5e3,
     defaultTests: 2,
-    label: "Medium"
+    label: "Medium",
+    defaultStyle: "handedness"
   },
-  high: { itemsPerStep: 2, rotateMs: 3500, defaultTests: 3, label: "High" }
+  high: {
+    itemsPerStep: 2,
+    rotateMs: 3500,
+    defaultTests: 3,
+    label: "Hard",
+    defaultStyle: "temporal"
+  },
+  extra: {
+    itemsPerStep: 3,
+    rotateMs: 2500,
+    defaultTests: 4,
+    label: "Extra Hard",
+    defaultStyle: "max"
+  }
 };
 var HOLD_MS = 800;
 var HAND_MIN_SCORE = 0.6;
@@ -89,48 +113,109 @@ function pickN(pool, n, distinct) {
 function isFaceComboValid(items) {
   return !(items.includes("WinkLeft") && items.includes("WinkRight"));
 }
-function generateStep(mode, items) {
+function randomHandSide() {
+  return Math.random() < 0.5 ? "Left" : "Right";
+}
+function usesHandedness(style) {
+  return style === "handedness" || style === "max";
+}
+function usesTemporal(style) {
+  return style === "temporal" || style === "max";
+}
+function handItems(names, style) {
+  if (!usesHandedness(style)) {
+    return names.map((name) => ({ kind: "hand", name }));
+  }
+  const first = randomHandSide();
+  const second = first === "Left" ? "Right" : "Left";
+  return names.map((name, index) => ({
+    kind: "hand",
+    name,
+    side: index % 2 === 0 ? first : second
+  }));
+}
+function faceItems(count) {
+  let attempt = [];
+  for (let i = 0; i < 8; i++) {
+    attempt = pickN(FACE_POOL, count, true);
+    if (isFaceComboValid(attempt)) break;
+  }
+  return attempt.map((name) => ({ kind: "face", name }));
+}
+function getItemsPerStep(level, mode, style) {
+  const base = SECURITY[level].itemsPerStep;
+  if (mode === "face") return base;
+  if (style === "two-hand" || style === "max") {
+    return mode === "both" ? 3 : 2;
+  }
+  if (style === "temporal") return 1;
+  return base;
+}
+function phaseKey(phase) {
+  return phase.map(
+    (item) => item.kind === "hand" ? `hand:${item.side ?? "any"}:${item.name}` : `face:${item.name}`
+  ).join("|");
+}
+function generateSinglePhase(mode, items, style) {
+  if ((style === "two-hand" || style === "max") && mode !== "face") {
+    const hands = handItems(pickN(HAND_POOL, 2, true), style);
+    if (mode === "both") return [...hands, ...faceItems(1)];
+    return hands;
+  }
   if (mode === "hand") {
-    return pickN(HAND_POOL, items, true).map((name) => ({
-      kind: "hand",
-      name
-    }));
+    return handItems(pickN(HAND_POOL, items, true), style);
   }
   if (mode === "face") {
-    let attempt = [];
-    for (let i = 0; i < 8; i++) {
-      attempt = pickN(FACE_POOL, items, true);
-      if (isFaceComboValid(attempt)) break;
-    }
-    return attempt.map((name) => ({ kind: "face", name }));
+    return faceItems(items);
   }
   if (items === 1) {
     const kind = Math.random() < 0.5 ? "hand" : "face";
     if (kind === "hand")
-      return [{ kind, name: pickN(HAND_POOL, 1, false)[0] }];
+      return handItems(pickN(HAND_POOL, 1, false), style);
     return [{ kind: "face", name: pickN(FACE_POOL, 1, false)[0] }];
   }
   const out = [];
-  out.push({ kind: "hand", name: pickN(HAND_POOL, 1, false)[0] });
+  out.push(...handItems(pickN(HAND_POOL, 1, false), style));
   const faceCount = items - 1;
-  let faceItems = [];
-  for (let i = 0; i < 8; i++) {
-    faceItems = pickN(FACE_POOL, faceCount, true);
-    if (isFaceComboValid(faceItems)) break;
-  }
-  for (const name of faceItems) out.push({ kind: "face", name });
+  out.push(...faceItems(faceCount));
   return out;
 }
-function generateChallenges(count, mode, itemsPerStep) {
+function generateStep(mode, items, style) {
+  if (!usesTemporal(style)) {
+    return { phases: [generateSinglePhase(mode, items, style)] };
+  }
+  const phaseCount = style === "max" ? 3 : 2;
+  const phases = [];
+  for (let i = 0; i < phaseCount; i++) {
+    let phase = generateSinglePhase(mode, items, style);
+    for (let attempt = 0; attempt < 8; attempt++) {
+      const previous = phases[phases.length - 1];
+      if (!previous || phaseKey(previous) !== phaseKey(phase)) break;
+      phase = generateSinglePhase(mode, items, style);
+    }
+    phases.push(phase);
+  }
+  return { phases };
+}
+function generateChallenges(count, mode, itemsPerStep, style) {
   const out = [];
-  for (let i = 0; i < count; i++) out.push(generateStep(mode, itemsPerStep));
+  for (let i = 0; i < count; i++) {
+    out.push(generateStep(mode, itemsPerStep, style));
+  }
   return out;
 }
 function itemLabel(it) {
-  return it.kind === "hand" ? HAND_LABEL[it.name] : FACE_LABEL[it.name];
+  if (it.kind === "face") return FACE_LABEL[it.name];
+  return it.side ? `${HAND_SIDE_LABEL[it.side]}: ${HAND_LABEL[it.name]}` : HAND_LABEL[it.name];
 }
 function itemEmoji(it) {
   return it.kind === "hand" ? HAND_EMOJI[it.name] : FACE_EMOJI[it.name];
+}
+function phaseLabel(phase) {
+  return phase.map(itemLabel).join(" + ");
+}
+function stepLabel(step) {
+  return step.phases.map(phaseLabel).join(" then ");
 }
 function blendshapeScore(result, name) {
   const cats = result?.faceBlendshapes?.[0]?.categories;
@@ -156,9 +241,9 @@ function faceGestureMatches(target, result) {
       return s("browInnerUp") > 0.45;
   }
 }
-function stepMatches(step, hand, face) {
+function phaseMatches(phase, hand, face) {
   const usedHandIdx = /* @__PURE__ */ new Set();
-  for (const item of step) {
+  for (const item of phase) {
     if (item.kind === "face") {
       if (!faceGestureMatches(item.name, face)) return false;
       continue;
@@ -168,7 +253,9 @@ function stepMatches(step, hand, face) {
     for (let i = 0; i < hands.length; i++) {
       if (usedHandIdx.has(i)) continue;
       const top = hands[i]?.[0];
-      if (top && top.categoryName === item.name && top.score >= HAND_MIN_SCORE) {
+      const side = hand?.handedness?.[i]?.[0]?.categoryName;
+      const sideMatches = !item.side || side === item.side;
+      if (top && top.categoryName === item.name && top.score >= HAND_MIN_SCORE && sideMatches) {
         found = i;
         break;
       }
@@ -354,6 +441,7 @@ function Palmprint({
   initialMode = "both",
   initialNumTests,
   initialCaptureMode = "off",
+  initialChallengeStyle,
   lockSettings = false,
   autoStart = false,
   compact = false,
@@ -361,6 +449,8 @@ function Palmprint({
   onVerified,
   challengeNonce
 } = {}) {
+  const startingChallengeStyle = initialChallengeStyle ?? SECURITY[initialLevel].defaultStyle;
+  const initialMaxTests = startingChallengeStyle === "max" ? 7 : 5;
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const handRef = useRef(null);
@@ -374,10 +464,14 @@ function Palmprint({
   const [error, setError] = useState(null);
   const [level, setLevel] = useState(initialLevel);
   const [numTests, setNumTests] = useState(
-    initialNumTests ?? SECURITY[initialLevel].defaultTests
+    Math.min(
+      initialNumTests ?? SECURITY[initialLevel].defaultTests,
+      initialMaxTests
+    )
   );
   const [mode, setMode] = useState(initialMode);
   const [captureMode, setCaptureMode] = useState(initialCaptureMode);
+  const [challengeStyle, setChallengeStyle] = useState(startingChallengeStyle);
   const [showSettings, setShowSettings] = useState(false);
   const [captures, setCaptures] = useState([]);
   const recorderRef = useRef(null);
@@ -391,12 +485,14 @@ function Palmprint({
   useEffect(() => {
     onVerifiedRef.current = onVerified;
   }, [onVerified]);
-  const itemsPerStep = SECURITY[level].itemsPerStep;
+  const itemsPerStep = getItemsPerStep(level, mode, challengeStyle);
   const rotateMs = SECURITY[level].rotateMs;
+  const maxTests = challengeStyle === "max" ? 7 : 5;
   const [challenges, setChallenges] = useState(
-    () => generateChallenges(numTests, mode, itemsPerStep)
+    () => generateChallenges(numTests, mode, itemsPerStep, challengeStyle)
   );
   const [stepIndex, setStepIndex] = useState(0);
+  const [phaseIndex, setPhaseIndex] = useState(0);
   const [holdProgress, setHoldProgress] = useState(0);
   const [token, setToken] = useState(null);
   const [copied, setCopied] = useState(false);
@@ -404,6 +500,10 @@ function Palmprint({
   useEffect(() => {
     stepIndexRef.current = stepIndex;
   }, [stepIndex]);
+  const phaseIndexRef = useRef(phaseIndex);
+  useEffect(() => {
+    phaseIndexRef.current = phaseIndex;
+  }, [phaseIndex]);
   const challengesRef = useRef(challenges);
   useEffect(() => {
     challengesRef.current = challenges;
@@ -416,6 +516,10 @@ function Palmprint({
   useEffect(() => {
     itemsRef.current = itemsPerStep;
   }, [itemsPerStep]);
+  const challengeStyleRef = useRef(challengeStyle);
+  useEffect(() => {
+    challengeStyleRef.current = challengeStyle;
+  }, [challengeStyle]);
   const rotateMsRef = useRef(rotateMs);
   useEffect(() => {
     rotateMsRef.current = rotateMs;
@@ -425,6 +529,7 @@ function Palmprint({
     challengeNonceRef.current = challengeNonce;
   }, [challengeNonce]);
   const currentStep = challenges[stepIndex] ?? null;
+  const currentPhase = currentStep?.phases[phaseIndex] ?? null;
   useEffect(() => {
     const original = console.error;
     console.error = (...args) => {
@@ -576,8 +681,9 @@ function Palmprint({
       lastVideoTimeRef.current = video.currentTime;
       const ts = performance.now();
       const step = challengesRef.current[stepIndexRef.current] ?? null;
-      const needHand = step ? step.some((s) => s.kind === "hand") : false;
-      const needFace = step ? step.some((s) => s.kind === "face") : true;
+      const phase = step?.phases[phaseIndexRef.current] ?? null;
+      const needHand = phase ? phase.some((s) => s.kind === "hand") : false;
+      const needFace = phase ? phase.some((s) => s.kind === "face") : true;
       let handResult = null;
       let faceResult = null;
       try {
@@ -590,7 +696,7 @@ function Palmprint({
       } catch (e) {
         console.error(e);
       }
-      const matched = step ? stepMatches(step, handResult, faceResult) : false;
+      const matched = phase ? phaseMatches(phase, handResult, faceResult) : false;
       drawOverlay(canvasRef.current, video, handResult, faceResult, matched);
       if (matched) {
         if (holdStartRef.current === null) holdStartRef.current = ts;
@@ -602,61 +708,67 @@ function Palmprint({
           stepStartRef.current = ts;
           const completedIdx = stepIndexRef.current;
           const completedStep = challengesRef.current[completedIdx];
-          const promptText = completedStep ? completedStep.map(itemLabel).join(" + ") : `step-${completedIdx + 1}`;
-          const isLast = completedIdx + 1 >= challengesRef.current.length;
-          const captureMode2 = captureModeRef.current;
-          if (captureMode2 === "photo" && video) {
-            void snapshotPhoto(video).then((blob) => {
-              if (!blob) return;
-              setCaptures((prev) => [
-                ...prev,
-                newCapture({
-                  stepIndex: completedIdx,
-                  prompt: promptText,
-                  type: "photo",
-                  mimeType: "image/png",
-                  blob
-                })
-              ]);
-            });
-          }
-          if (captureMode2 === "video") {
-            void finalizeRecorder().then((res) => {
-              if (!res) return;
-              setCaptures((prev) => [
-                ...prev,
-                newCapture({
-                  stepIndex: completedIdx,
-                  prompt: promptText,
-                  type: "video",
-                  mimeType: res.mimeType,
-                  blob: res.blob
-                })
-              ]);
-            });
-          }
-          setStepIndex((s) => {
-            const next = s + 1;
-            if (next >= challengesRef.current.length) {
-              setStatus("verified");
-              setToken(
-                generateToken({
-                  level,
-                  steps: challengesRef.current.length,
-                  itemsPerStep: itemsRef.current,
-                  challengeNonce: challengeNonceRef.current
-                })
-              );
-              if (captureMode2 === "video") {
-                setTimeout(() => stop(), 250);
-              } else {
-                stop();
-              }
+          const nextPhase = phaseIndexRef.current + 1;
+          if (completedStep && nextPhase < completedStep.phases.length) {
+            setPhaseIndex(nextPhase);
+          } else {
+            const promptText = completedStep ? stepLabel(completedStep) : `step-${completedIdx + 1}`;
+            const isLast = completedIdx + 1 >= challengesRef.current.length;
+            const captureMode2 = captureModeRef.current;
+            if (captureMode2 === "photo" && video) {
+              void snapshotPhoto(video).then((blob) => {
+                if (!blob) return;
+                setCaptures((prev) => [
+                  ...prev,
+                  newCapture({
+                    stepIndex: completedIdx,
+                    prompt: promptText,
+                    type: "photo",
+                    mimeType: "image/png",
+                    blob
+                  })
+                ]);
+              });
             }
-            return next;
-          });
-          if (!isLast && captureMode2 === "video") {
-            startRecorder();
+            if (captureMode2 === "video") {
+              void finalizeRecorder().then((res) => {
+                if (!res) return;
+                setCaptures((prev) => [
+                  ...prev,
+                  newCapture({
+                    stepIndex: completedIdx,
+                    prompt: promptText,
+                    type: "video",
+                    mimeType: res.mimeType,
+                    blob: res.blob
+                  })
+                ]);
+              });
+            }
+            setStepIndex((s) => {
+              const next = s + 1;
+              if (next >= challengesRef.current.length) {
+                setStatus("verified");
+                setToken(
+                  generateToken({
+                    level,
+                    steps: challengesRef.current.length,
+                    itemsPerStep: itemsRef.current,
+                    challengeNonce: challengeNonceRef.current
+                  })
+                );
+                if (captureMode2 === "video") {
+                  setTimeout(() => stop(), 250);
+                } else {
+                  stop();
+                }
+              }
+              setPhaseIndex(0);
+              return next;
+            });
+            if (!isLast && captureMode2 === "video") {
+              startRecorder();
+            }
           }
         }
       } else {
@@ -667,9 +779,14 @@ function Palmprint({
           const idx = stepIndexRef.current;
           setChallenges((prev) => {
             const copy = [...prev];
-            copy[idx] = generateStep(modeRef.current, itemsRef.current);
+            copy[idx] = generateStep(
+              modeRef.current,
+              itemsRef.current,
+              challengeStyleRef.current
+            );
             return copy;
           });
+          setPhaseIndex(0);
           if (captureModeRef.current === "video") {
             discardRecorder();
             startRecorder();
@@ -705,8 +822,11 @@ function Palmprint({
       if (!video) return;
       video.srcObject = stream;
       await video.play();
-      setChallenges(generateChallenges(numTests, mode, itemsPerStep));
+      setChallenges(
+        generateChallenges(numTests, mode, itemsPerStep, challengeStyle)
+      );
       setStepIndex(0);
+      setPhaseIndex(0);
       setStatus("running");
       lastVideoTimeRef.current = -1;
       holdStartRef.current = null;
@@ -721,11 +841,14 @@ function Palmprint({
       );
       setStatus("error");
     }
-  }, [itemsPerStep, mode, numTests, startRecorder]);
+  }, [challengeStyle, itemsPerStep, mode, numTests, startRecorder]);
   const reset = useCallback(() => {
     stop();
-    setChallenges(generateChallenges(numTests, mode, itemsPerStep));
+    setChallenges(
+      generateChallenges(numTests, mode, itemsPerStep, challengeStyle)
+    );
     setStepIndex(0);
+    setPhaseIndex(0);
     setStatus(handRef.current && faceRef.current ? "ready" : "loading");
     setError(null);
     setToken(null);
@@ -735,7 +858,7 @@ function Palmprint({
       return [];
     });
     verifiedFiredRef.current = false;
-  }, [itemsPerStep, mode, numTests, stop]);
+  }, [challengeStyle, itemsPerStep, mode, numTests, stop]);
   useEffect(() => {
     if (!autoStart || status !== "ready") return;
     const t = setTimeout(() => {
@@ -753,9 +876,16 @@ function Palmprint({
   }, [status, token, captures]);
   const handleLevelChange = (next) => {
     setLevel(next);
+    setChallengeStyle(SECURITY[next].defaultStyle);
     setNumTests(
-      (current) => current < SECURITY[next].defaultTests ? SECURITY[next].defaultTests : current
+      (current) => current < SECURITY[next].defaultTests ? SECURITY[next].defaultTests : SECURITY[next].defaultStyle !== "max" && current > 5 ? 5 : current
     );
+  };
+  const handleChallengeStyleChange = (next) => {
+    setChallengeStyle(next);
+    if (next !== "max") {
+      setNumTests((current) => Math.min(current, 5));
+    }
   };
   const copyToken = useCallback(async () => {
     if (!token) return;
@@ -811,7 +941,7 @@ function Palmprint({
         showSettings && !settingsLocked && !lockSettings && /* @__PURE__ */ jsxs("div", { className: "w-full rounded-2xl border border-foreground/10 bg-foreground/[0.03] p-4 flex flex-col gap-4 text-foreground", children: [
           /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-2", children: [
             /* @__PURE__ */ jsx("span", { className: "text-sm font-medium", children: "Security level" }),
-            /* @__PURE__ */ jsx("div", { className: "grid grid-cols-3 gap-2", children: ["low", "medium", "high"].map((l) => /* @__PURE__ */ jsx(
+            /* @__PURE__ */ jsx("div", { className: "grid grid-cols-2 sm:grid-cols-4 gap-2", children: ["low", "medium", "high", "extra"].map((l) => /* @__PURE__ */ jsx(
               "button",
               {
                 onClick: () => handleLevelChange(l),
@@ -838,7 +968,7 @@ function Palmprint({
               {
                 type: "range",
                 min: 1,
-                max: 5,
+                max: maxTests,
                 step: 1,
                 value: numTests,
                 onChange: (e) => setNumTests(Number(e.target.value)),
@@ -858,6 +988,25 @@ function Palmprint({
               m
             )) }),
             mode === "hand" && itemsPerStep > 1 && /* @__PURE__ */ jsx("p", { className: "text-xs text-foreground/60", children: "Two hand gestures = use both hands at once." })
+          ] }),
+          /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-2", children: [
+            /* @__PURE__ */ jsx("span", { className: "text-sm font-medium", children: "Challenge style" }),
+            /* @__PURE__ */ jsx("div", { className: "grid grid-cols-2 sm:grid-cols-5 gap-2", children: [
+              "standard",
+              "handedness",
+              "two-hand",
+              "temporal",
+              "max"
+            ].map((s) => /* @__PURE__ */ jsx(
+              "button",
+              {
+                onClick: () => handleChallengeStyleChange(s),
+                className: `px-3 py-2 rounded-lg text-sm font-medium border transition ${challengeStyle === s ? "bg-emerald-500 text-black border-emerald-500" : "bg-transparent border-foreground/15 hover:bg-foreground/5"}`,
+                children: s === "standard" ? "Standard" : s === "handedness" ? "Left/right" : s === "two-hand" ? "Two hand" : s === "temporal" ? "Then" : "Max combos"
+              },
+              s
+            )) }),
+            /* @__PURE__ */ jsx("p", { className: "text-xs text-foreground/60", children: challengeStyle === "standard" ? "Uses the normal canned MediaPipe gesture pool, including I Love You when hand prompts are generated." : challengeStyle === "handedness" ? "Adds left/right hand requirements to hand prompts." : challengeStyle === "two-hand" ? "Requires two simultaneous hand gestures; Both mode adds a face prompt too." : challengeStyle === "temporal" ? "Asks for ordered sequences like Thumbs Up then Thumbs Down." : "Combines ordered sequences, left/right hands, two-hand prompts, Both mode face prompts, and up to 7 tests." })
           ] }),
           /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-2", children: [
             /* @__PURE__ */ jsx("span", { className: "text-sm font-medium", children: "Capture on success" }),
@@ -1030,7 +1179,7 @@ function Palmprint({
               )) })
             ] })
           ] }) }),
-          status === "running" && currentStep && /* @__PURE__ */ jsxs("div", { className: "absolute top-3 left-3 right-3 flex items-start justify-between gap-3", children: [
+          status === "running" && currentStep && currentPhase && /* @__PURE__ */ jsxs("div", { className: "absolute top-3 left-3 right-3 flex items-start justify-between gap-3", children: [
             /* @__PURE__ */ jsxs("div", { className: "px-3 py-2 rounded-xl bg-black/60 backdrop-blur text-white text-sm max-w-[70%]", children: [
               /* @__PURE__ */ jsxs("div", { className: "opacity-70 text-xs", children: [
                 "Step ",
@@ -1039,12 +1188,16 @@ function Palmprint({
                 challenges.length,
                 " \u2014",
                 " ",
-                currentStep.length === 1 ? currentStep[0].kind === "hand" ? "show" : "make" : "do all at once"
+                currentStep.phases.length > 1 ? `part ${phaseIndex + 1} of ${currentStep.phases.length}` : currentPhase.length === 1 ? currentPhase[0].kind === "hand" ? "show" : "make" : "do all at once"
               ] }),
-              /* @__PURE__ */ jsx("div", { className: "font-semibold flex flex-col gap-0.5", children: currentStep.map((it, i) => /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+              /* @__PURE__ */ jsx("div", { className: "font-semibold flex flex-col gap-0.5", children: currentPhase.map((it, i) => /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
                 /* @__PURE__ */ jsx("span", { className: "text-xl", children: itemEmoji(it) }),
                 /* @__PURE__ */ jsx("span", { children: itemLabel(it) })
-              ] }, i)) })
+              ] }, i)) }),
+              currentStep.phases.length > 1 && /* @__PURE__ */ jsxs("div", { className: "mt-1 text-[11px] text-white/60", children: [
+                "Full order: ",
+                stepLabel(currentStep)
+              ] })
             ] }),
             /* @__PURE__ */ jsx("div", { className: "flex gap-1.5 flex-wrap justify-end max-w-[28%]", children: challenges.map((_, i) => /* @__PURE__ */ jsx(
               "div",
@@ -1272,6 +1425,7 @@ function PalmprintProvider({
               initialMode: opts.mode ?? "both",
               initialNumTests: opts.numTests,
               initialCaptureMode: opts.captureMode ?? "off",
+              initialChallengeStyle: opts.challengeStyle,
               challengeNonce: opts.challengeNonce,
               lockSettings: true,
               compact: true,
@@ -1317,6 +1471,7 @@ function PalmprintGuard({
   numTests,
   mode,
   captureMode,
+  challengeStyle,
   reason = "Verification required",
   description,
   onVerified,
@@ -1337,6 +1492,7 @@ function PalmprintGuard({
         numTests,
         mode,
         captureMode,
+        challengeStyle,
         reason,
         description
       });
@@ -1353,6 +1509,7 @@ function PalmprintGuard({
     numTests,
     mode,
     captureMode,
+    challengeStyle,
     reason,
     description,
     onVerified
@@ -1401,7 +1558,8 @@ var DEFAULT_WIDGET_CONFIG = {
   level: "medium",
   mode: "both",
   numTests: 2,
-  captureMode: "off"
+  captureMode: "off",
+  challengeStyle: "handedness"
 };
 var SHAPE_CLASS = {
   pill: "rounded-full",
@@ -1593,6 +1751,7 @@ function VerifyWidget({
             initialMode: config.mode,
             initialNumTests: config.numTests,
             initialCaptureMode: config.captureMode,
+            initialChallengeStyle: config.challengeStyle,
             challengeNonce: flow?.challengeNonce,
             lockSettings: true,
             compact: true,
@@ -1618,7 +1777,9 @@ var DEFAULT_CAPTCHA_CONFIG = {
   fullWidth: false,
   level: "medium",
   mode: "both",
-  numTests: 2
+  numTests: 2,
+  captureMode: "off",
+  challengeStyle: "handedness"
 };
 function CaptchaCheckbox({
   config = {},
@@ -1638,6 +1799,7 @@ function CaptchaCheckbox({
         mode: cfg.mode,
         numTests: cfg.numTests,
         captureMode: cfg.captureMode,
+        challengeStyle: cfg.challengeStyle,
         challengeNonce: cfg.challengeNonce,
         reason: "Verify you're human",
         description: "Complete the Palmprint challenge to continue."

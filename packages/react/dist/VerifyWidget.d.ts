@@ -1,4 +1,4 @@
-import { type Capture, type CaptureMode, type Mode, type SecurityLevel } from "./Palmprint";
+import { type Capture, type CaptureMode, type ChallengeStyle, type Mode, type SecurityLevel } from "./Palmprint";
 export type WidgetShape = "pill" | "rounded" | "square";
 export type WidgetSize = "sm" | "md" | "lg";
 export type WidgetTheme = "emerald" | "dark" | "light";
@@ -14,6 +14,7 @@ export type WidgetConfig = {
     mode: Mode;
     numTests: number;
     captureMode: CaptureMode;
+    challengeStyle: ChallengeStyle;
 };
 export declare const DEFAULT_WIDGET_CONFIG: WidgetConfig;
 export type VerifyWidgetProps = {

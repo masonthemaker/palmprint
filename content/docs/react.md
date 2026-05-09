@@ -50,10 +50,11 @@ async function onChangePassword() {
 
 | Option | Type | Default |
 |---|---|---|
-| `level` | `"low" \| "medium" \| "high"` | `"medium"` |
-| `numTests` | `number` | derived from level (low/med = 2, high = 3) |
+| `level` | `"low" \| "medium" \| "high" \| "extra"` | `"medium"` |
+| `numTests` | `number` | derived from level (easy/medium = 2, hard = 3, extra = 4) |
 | `mode` | `"hand" \| "face" \| "both"` | `"both"` |
 | `captureMode` | `"off" \| "photo" \| "video"` | `"off"` |
+| `challengeStyle` | `"standard" \| "handedness" \| "two-hand" \| "temporal" \| "max"` | level preset |
 | `reason` | `string` | — |
 | `description` | `string` | — |
 | `challengeToken` | `string` | auto-fetched from `/challenge` if omitted |
@@ -61,13 +62,34 @@ async function onChangePassword() {
 
 Pass `challengeToken` + `challengeNonce` when you've already minted a challenge server-side (e.g. the consent flow does this). The provider will skip the auto-fetch.
 
+Challenge styles are opt-in:
+
+| Style | What it does |
+|---|---|
+| `standard` | Current Palmprint behavior. Uses MediaPipe's canned gesture pool, including `ILoveYou` for hand prompts. |
+| `handedness` | Adds left/right hand requirements to hand prompts. |
+| `two-hand` | Requires two simultaneous hand gestures; in `both` mode, adds one face prompt too. |
+| `temporal` | Requires ordered prompts, such as `Thumbs Up` then `Thumbs Down`. |
+| `max` | Combines ordered prompts, left/right hands, two-hand prompts, `both` mode face prompts, and allows up to 7 tests. |
+
+Level presets:
+
+| Level | Label | Default style |
+|---|---|---|
+| `low` | Easy | `standard` |
+| `medium` | Medium | `handedness` |
+| `high` | Hard | `temporal` |
+| `extra` | Extra Hard | `max` |
+
+For the detailed preset behavior and maximum combination math, see [Challenge levels](/docs/challenge-levels).
+
 ### Result shape
 
 ```ts
 {
   sessionToken: string;       // HMAC-signed — what you actually send.
   expiresAt: number;          // Unix seconds.
-  level: "low" | "medium" | "high";
+  level: "low" | "medium" | "high" | "extra";
   challengeNonce: string;     // Server-bound nonce for the captures bucket.
   clientToken: string;        // Unsigned — for inspection only.
   captures: Capture[];        // Raw blobs in browser memory.
@@ -137,6 +159,7 @@ import { VerifyWidget } from "@palmprint/react";
     mode: "both",
     numTests: 2,
     captureMode: "off",
+    challengeStyle: "handedness",
   }}
   onVerified={({ sessionToken, captures }) => {
     // Send sessionToken to protected endpoints as Authorization: Bearer <token>.
@@ -166,6 +189,8 @@ import { CaptchaCheckbox } from "@palmprint/react";
     level: "medium",
     mode: "both",
     numTests: 2,
+    captureMode: "off",
+    challengeStyle: "handedness",
   }}
   onVerified={({ sessionToken }) => setHiddenInput(sessionToken)}
 />;

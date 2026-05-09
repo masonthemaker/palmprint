@@ -11,6 +11,7 @@ export { default as CaptchaCheckbox } from "./CaptchaCheckbox";
 export type {
   Capture,
   CaptureMode,
+  ChallengeStyle,
   Mode,
   PalmprintProps,
   SecurityLevel,

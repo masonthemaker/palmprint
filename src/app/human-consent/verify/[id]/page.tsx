@@ -68,7 +68,7 @@ export default function VerifyPage() {
       // redeems with the server, and resolves with a signed session token.
       const result = await verify({
         level: req.level,
-        numTests: req.level === "high" ? 3 : 2,
+        numTests: req.level === "extra" ? 4 : req.level === "high" ? 3 : 2,
         mode: "both",
         captureMode: "off",
         challengeToken: req.challengeToken,

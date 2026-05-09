@@ -11,8 +11,8 @@ export type CaptchaCheckboxConfig = {
     failedLabel?: string;
     theme?: CaptchaTheme;
     fullWidth?: boolean;
-} & Pick<RequireOptions, "level" | "mode" | "numTests" | "captureMode" | "challengeNonce">;
-export declare const DEFAULT_CAPTCHA_CONFIG: Required<Pick<CaptchaCheckboxConfig, "label" | "verifyingLabel" | "verifiedLabel" | "failedLabel" | "theme" | "fullWidth">> & Pick<CaptchaCheckboxConfig, "level" | "mode" | "numTests" | "captureMode">;
+} & Pick<RequireOptions, "level" | "mode" | "numTests" | "captureMode" | "challengeStyle" | "challengeNonce">;
+export declare const DEFAULT_CAPTCHA_CONFIG: Required<Pick<CaptchaCheckboxConfig, "label" | "verifyingLabel" | "verifiedLabel" | "failedLabel" | "theme" | "fullWidth">> & Pick<CaptchaCheckboxConfig, "level" | "mode" | "numTests" | "captureMode" | "challengeStyle">;
 export type CaptchaCheckboxProps = {
     config?: CaptchaCheckboxConfig;
     onVerified?: (result: VerificationResult) => void;
